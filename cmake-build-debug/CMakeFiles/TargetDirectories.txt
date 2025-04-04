@@ -1,0 +1,5 @@
+D:/PokerServer/cmake-build-debug/CMakeFiles/PokerServer.dir
+D:/PokerServer/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/PokerServer/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+D:/PokerServer/cmake-build-debug/CMakeFiles/PokerServer_autogen_timestamp_deps.dir
+D:/PokerServer/cmake-build-debug/CMakeFiles/PokerServer_autogen.dir
