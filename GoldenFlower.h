@@ -16,6 +16,9 @@
 #include <QHBoxLayout>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QEvent>
+#include <QEnterEvent>
+#include <QTimer>
 
 using namespace std;
 
@@ -62,6 +65,7 @@ class GoldenFlowerWindow : public QMainWindow {
 
 public:
     explicit GoldenFlowerWindow(QWidget *parent = nullptr);
+    ~GoldenFlowerWindow() override;
     
     // 事件过滤器，用于处理窗口大小变化事件
     bool eventFilter(QObject *watched, QEvent *event) override;
@@ -74,7 +78,6 @@ private slots:
     void lookCards();           // 看牌
     void placeBet();            // 下注
     void fold();                // 弃牌
-    void showdown();            // 开牌
     void requestShowdown();     // 请求指定玩家开牌
 
 private:
@@ -89,7 +92,6 @@ private:
     QPushButton *lookButton;
     QPushButton *betButton;
     QPushButton *foldButton;
-    QPushButton *showdownButton;
     QPushButton *requestShowdownButton;
     
     // 游戏逻辑
@@ -99,6 +101,7 @@ private:
     int minBet;                // 最小下注
     int entranceFee;           // 入场费
     bool gameInProgress;
+    int maxPlayers;            // 最大玩家数
     
     // 布局调整参数
     int tableWidth;           // 牌桌宽度
@@ -107,6 +110,8 @@ private:
     int cardDistance;          // 卡牌距离牌桌中心的距离
     float scaleFactor;         // 界面缩放因子
     
+
+    
     void initializeUI();        // 初始化UI
     void updateUI();            // 更新UI
     void setupGame();           // 设置游戏
@@ -114,6 +119,11 @@ private:
     CardType evaluateHand(const vector<string>& cards); // 评估牌型
     bool compareHands(const vector<string>& hand1, const vector<string>& hand2); // 比较牌型
     void adjustLayoutParameters(int newTableWidth, int newTableHeight, int newPlayerInfoDistance, int newCardDistance, float newScaleFactor); // 调整布局参数
+    void showComparisonDialog(int player1Index, int player2Index); // 显示比牌结果对话框
+    void endGame(int winnerIndex); // 结束游戏并处理获胜者奖励
+    
+    // 卡牌交互效果
+    void setupCardHoverEffects(); // 设置卡牌悬停效果
 };
 
 #endif //POKERSERVER_GOLDENFLOWER_H

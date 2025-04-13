@@ -157,7 +157,7 @@ build PokerServer_autogen/timestamp PokerServer_autogen/mocs_compilation.cpp | $
 #############################################
 # Phony custom command for CMakeFiles\PokerServer_autogen_timestamp_deps
 
-build CMakeFiles/PokerServer_autogen_timestamp_deps | ${cmake_ninja_workdir}CMakeFiles/PokerServer_autogen_timestamp_deps: phony D$:/QT/6.8.3/mingw_64/lib/libQt6Gui.a D$:/QT/6.8.3/mingw_64/lib/libQt6Core.a D$:/QT/6.8.3/mingw_64/bin/moc.exe D$:/QT/6.8.3/mingw_64/bin/uic.exe D$:/QT/6.8.3/mingw_64/lib/libQt6Widgets.a
+build CMakeFiles/PokerServer_autogen_timestamp_deps | ${cmake_ninja_workdir}CMakeFiles/PokerServer_autogen_timestamp_deps: phony D$:/QT/6.8.3/mingw_64/lib/libQt6Core.a D$:/QT/6.8.3/mingw_64/bin/moc.exe D$:/QT/6.8.3/mingw_64/lib/libQt6Gui.a D$:/QT/6.8.3/mingw_64/bin/uic.exe D$:/QT/6.8.3/mingw_64/lib/libQt6Widgets.a
 
 
 #############################################

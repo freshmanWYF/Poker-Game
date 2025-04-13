@@ -29,6 +29,7 @@ set(PROJECT_SOURCES
 set(PROJECT_HEADERS
     PokerGame.h
     GoldenFlower.h
+    Card.h
 )
 
 # 创建可执行文件

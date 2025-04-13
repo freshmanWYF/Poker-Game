@@ -43,13 +43,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 35,
+				"line" : 36,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 41,
+				"line" : 42,
 				"parent" : 0
 			},
 			{
@@ -393,21 +393,22 @@
 			"sourceIndexes" : 
 			[
 				5,
-				6
+				6,
+				7
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				7
+				8
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				8
+				9
 			]
 		}
 	],
@@ -452,6 +453,11 @@
 		{
 			"backtrace" : 1,
 			"path" : "GoldenFlower.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Card.h",
 			"sourceGroupIndex" : 1
 		},
 		{

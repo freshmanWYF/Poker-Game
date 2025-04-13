@@ -44,7 +44,6 @@ static constexpr auto qt_meta_stringdata_ZN18GoldenFlowerWindowE = QtMocHelpers:
     "lookCards",
     "placeBet",
     "fold",
-    "showdown",
     "requestShowdown"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
@@ -57,7 +56,7 @@ Q_CONSTINIT static const uint qt_meta_data_ZN18GoldenFlowerWindowE[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-       6,   14, // methods
+       5,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -65,15 +64,13 @@ Q_CONSTINIT static const uint qt_meta_data_ZN18GoldenFlowerWindowE[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   50,    2, 0x08,    1 /* Private */,
-       3,    0,   51,    2, 0x08,    2 /* Private */,
-       4,    0,   52,    2, 0x08,    3 /* Private */,
-       5,    0,   53,    2, 0x08,    4 /* Private */,
-       6,    0,   54,    2, 0x08,    5 /* Private */,
-       7,    0,   55,    2, 0x08,    6 /* Private */,
+       1,    0,   44,    2, 0x08,    1 /* Private */,
+       3,    0,   45,    2, 0x08,    2 /* Private */,
+       4,    0,   46,    2, 0x08,    3 /* Private */,
+       5,    0,   47,    2, 0x08,    4 /* Private */,
+       6,    0,   48,    2, 0x08,    5 /* Private */,
 
  // slots: parameters
-    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -100,8 +97,6 @@ Q_CONSTINIT const QMetaObject GoldenFlowerWindow::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'fold'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'showdown'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'requestShowdown'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
@@ -117,8 +112,7 @@ void GoldenFlowerWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, i
         case 1: _t->lookCards(); break;
         case 2: _t->placeBet(); break;
         case 3: _t->fold(); break;
-        case 4: _t->showdown(); break;
-        case 5: _t->requestShowdown(); break;
+        case 4: _t->requestShowdown(); break;
         default: ;
         }
     }
@@ -144,14 +138,14 @@ int GoldenFlowerWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 6)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 5;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 6)
+        if (_id < 5)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 6;
+        _id -= 5;
     }
     return _id;
 }

@@ -9,5 +9,7 @@ int main(int argc, char *argv[]) {
     window.show();
     
     // 进入应用程序主循环
-    return app.exec();
+    int result = app.exec();
+    
+    return result;
 }

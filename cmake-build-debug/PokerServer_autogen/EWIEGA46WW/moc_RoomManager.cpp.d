@@ -1,14 +1,17 @@
-D:/PokerServer/cmake-build-debug/PokerServer_autogen/EWIEGA46WW/moc_GoldenFlower.cpp: D:/PokerServer/GoldenFlower.h \
+D:/PokerServer/cmake-build-debug/PokerServer_autogen/EWIEGA46WW/moc_RoomManager.cpp: D:/PokerServer/RoomManager.h \
   D:/PokerServer/cmake-build-debug/PokerServer_autogen/moc_predefs.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/QEvent \
+  D:/PokerServer/NetworkManager.h \
+  D:/QT/6.8.3/mingw_64/include/QtCore/QJsonArray \
+  D:/QT/6.8.3/mingw_64/include/QtCore/QJsonDocument \
+  D:/QT/6.8.3/mingw_64/include/QtCore/QJsonObject \
   D:/QT/6.8.3/mingw_64/include/QtCore/QList \
+  D:/QT/6.8.3/mingw_64/include/QtCore/QMap \
   D:/QT/6.8.3/mingw_64/include/QtCore/QObject \
-  D:/QT/6.8.3/mingw_64/include/QtCore/QRect \
-  D:/QT/6.8.3/mingw_64/include/QtCore/QSize \
-  D:/QT/6.8.3/mingw_64/include/QtCore/QSizeF \
-  D:/QT/6.8.3/mingw_64/include/QtCore/QTimer \
+  D:/QT/6.8.3/mingw_64/include/QtCore/QString \
+  D:/QT/6.8.3/mingw_64/include/QtCore/QUrl \
+  D:/QT/6.8.3/mingw_64/include/QtCore/QUrlQuery \
+  D:/QT/6.8.3/mingw_64/include/QtCore/QUuid \
   D:/QT/6.8.3/mingw_64/include/QtCore/q20functional.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/q20iterator.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/q20memory.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/q20type_traits.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/q20utility.h \
@@ -22,12 +25,14 @@ D:/PokerServer/cmake-build-debug/PokerServer_autogen/EWIEGA46WW/moc_GoldenFlower
   D:/QT/6.8.3/mingw_64/include/QtCore/qatomic.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qatomic_cxx11.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qbasicatomic.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qbasictimer.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qbindingstorage.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qbytearray.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qbytearraylist.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qbytearrayview.h \
+  D:/QT/6.8.3/mingw_64/include/QtCore/qcalendar.h \
+  D:/QT/6.8.3/mingw_64/include/QtCore/qcborcommon.h \
+  D:/QT/6.8.3/mingw_64/include/QtCore/qcborvalue.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qchar.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qcompare.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qcompare_impl.h \
@@ -39,16 +44,11 @@ D:/PokerServer/cmake-build-debug/PokerServer_autogen/EWIEGA46WW/moc_GoldenFlower
   D:/QT/6.8.3/mingw_64/include/QtCore/qcontainerinfo.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qcontainertools_impl.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qcontiguouscache.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qcoreapplication.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qcoreapplication_platform.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qcoreevent.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qdarwinhelpers.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qdatastream.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qdeadlinetimer.h \
+  D:/QT/6.8.3/mingw_64/include/QtCore/qdatetime.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qdebug.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qelapsedtimer.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qendian.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qeventloop.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qexceptionhandling.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qflags.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qfloat16.h \
@@ -64,20 +64,21 @@ D:/PokerServer/cmake-build-debug/PokerServer_autogen/EWIEGA46WW/moc_GoldenFlower
   D:/QT/6.8.3/mingw_64/include/QtCore/qiodevicebase.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qiterable.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qiterator.h \
+  D:/QT/6.8.3/mingw_64/include/QtCore/qjsonarray.h \
+  D:/QT/6.8.3/mingw_64/include/QtCore/qjsondocument.h \
+  D:/QT/6.8.3/mingw_64/include/QtCore/qjsonobject.h \
+  D:/QT/6.8.3/mingw_64/include/QtCore/qjsonvalue.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qlatin1stringview.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qline.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qlist.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qlocale.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qlogging.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qmalloc.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qmap.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qmargins.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qmath.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qmetacontainer.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qmetatype.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qminmax.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qnamespace.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qnativeinterface.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qnumeric.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qobject.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qobject_impl.h \
@@ -85,10 +86,9 @@ D:/PokerServer/cmake-build-debug/PokerServer_autogen/EWIEGA46WW/moc_GoldenFlower
   D:/QT/6.8.3/mingw_64/include/QtCore/qobjectdefs_impl.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qoverload.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qpair.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qpoint.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qprocessordetection.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qrect.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qrefcount.h \
+  D:/QT/6.8.3/mingw_64/include/QtCore/qregularexpression.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qscopedpointer.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qscopeguard.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qset.h \
@@ -96,8 +96,6 @@ D:/PokerServer/cmake-build-debug/PokerServer_autogen/EWIEGA46WW/moc_GoldenFlower
   D:/QT/6.8.3/mingw_64/include/QtCore/qshareddata_impl.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qsharedpointer.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qsharedpointer_impl.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qsize.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qspan.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qstring.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qstringalgorithms.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qstringbuilder.h \
@@ -122,7 +120,6 @@ D:/PokerServer/cmake-build-debug/PokerServer_autogen/EWIEGA46WW/moc_GoldenFlower
   D:/QT/6.8.3/mingw_64/include/QtCore/qtdeprecationmarkers.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qtenvironmentvariables.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qtextstream.h \
-  D:/QT/6.8.3/mingw_64/include/QtCore/qtimer.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qtmetamacros.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qtnoop.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qtpreprocessorsupport.h \
@@ -134,84 +131,23 @@ D:/PokerServer/cmake-build-debug/PokerServer_autogen/EWIEGA46WW/moc_GoldenFlower
   D:/QT/6.8.3/mingw_64/include/QtCore/qtypeinfo.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qtypes.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qurl.h \
+  D:/QT/6.8.3/mingw_64/include/QtCore/qurlquery.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qutf8stringview.h \
+  D:/QT/6.8.3/mingw_64/include/QtCore/quuid.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qvariant.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qvarlengtharray.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qversiontagging.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qxptype_traits.h \
   D:/QT/6.8.3/mingw_64/include/QtCore/qyieldcpu.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/QEnterEvent \
-  D:/QT/6.8.3/mingw_64/include/QtGui/QTransform \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qaction.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qbitmap.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qbrush.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qcolor.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qcursor.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qevent.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qeventpoint.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qfont.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qfontinfo.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qfontmetrics.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qguiapplication.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qguiapplication_platform.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qicon.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qimage.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qinputdevice.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qinputmethod.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qkeysequence.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qpaintdevice.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qpalette.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qpen.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qpicture.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qpixelformat.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qpixmap.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qpointingdevice.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qpolygon.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qregion.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qrgb.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qrgba64.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qscreen.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qscreen_platform.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qtextcursor.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qtextdocument.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qtextformat.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qtextoption.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qtgui-config.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qtguiexports.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qtguiglobal.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qtransform.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qvector2d.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qvectornd.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qwindowdefs.h \
-  D:/QT/6.8.3/mingw_64/include/QtGui/qwindowdefs_win.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/QHBoxLayout \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/QInputDialog \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/QLabel \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/QMainWindow \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/QMessageBox \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/QPushButton \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/QVBoxLayout \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/QWidget \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qabstractbutton.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qboxlayout.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qdialog.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qdialogbuttonbox.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qframe.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qgridlayout.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qinputdialog.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qlabel.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qlayout.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qlayoutitem.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qlineedit.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qmainwindow.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qmessagebox.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qpushbutton.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qsizepolicy.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qtabwidget.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qtwidgets-config.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qtwidgetsexports.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
-  D:/QT/6.8.3/mingw_64/include/QtWidgets/qwidget.h \
+  D:/QT/6.8.3/mingw_64/include/QtNetwork/QTcpServer \
+  D:/QT/6.8.3/mingw_64/include/QtNetwork/QTcpSocket \
+  D:/QT/6.8.3/mingw_64/include/QtNetwork/qabstractsocket.h \
+  D:/QT/6.8.3/mingw_64/include/QtNetwork/qhostaddress.h \
+  D:/QT/6.8.3/mingw_64/include/QtNetwork/qtcpserver.h \
+  D:/QT/6.8.3/mingw_64/include/QtNetwork/qtcpsocket.h \
+  D:/QT/6.8.3/mingw_64/include/QtNetwork/qtnetwork-config.h \
+  D:/QT/6.8.3/mingw_64/include/QtNetwork/qtnetworkexports.h \
+  D:/QT/6.8.3/mingw_64/include/QtNetwork/qtnetworkglobal.h \
   D:/clion/CLion\ 2024.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/algorithm \
   D:/clion/CLion\ 2024.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/array \
   D:/clion/CLion\ 2024.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/atomic \
@@ -302,7 +238,6 @@ D:/PokerServer/cmake-build-debug/PokerServer_autogen/EWIEGA46WW/moc_GoldenFlower
   D:/clion/CLion\ 2024.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/uses_allocator_args.h \
   D:/clion/CLion\ 2024.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/utility.h \
   D:/clion/CLion\ 2024.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/vector.tcc \
-  D:/clion/CLion\ 2024.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/cassert \
   D:/clion/CLion\ 2024.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/cctype \
   D:/clion/CLion\ 2024.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/cerrno \
   D:/clion/CLion\ 2024.1/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/chrono \
