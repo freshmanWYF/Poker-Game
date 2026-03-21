@@ -1,0 +1,39 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "CMake: build",
+            "type": "shell",
+            "command": "D:\\QT\\Tools\\CMake_64\\bin\\cmake.exe",
+            "args": [
+                "-S",
+                ".",
+                "-B",
+                "build",
+                "-G",
+                "Ninja",
+                "-DCMAKE_MAKE_PROGRAM=D:/QT/Tools/Ninja/ninja.exe",
+                "-DCMAKE_PREFIX_PATH=D:/QT/6.8.3/mingw_64",
+                "-DCMAKE_C_COMPILER=D:/QT/Tools/mingw1310_64/bin/gcc.exe",
+                "-DCMAKE_CXX_COMPILER=D:/QT/Tools/mingw1310_64/bin/g++.exe"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "CMake: build step",
+            "type": "shell",
+            "command": "D:\\QT\\Tools\\CMake_64\\bin\\cmake.exe",
+            "args": [
+                "--build",
+                "build",
+                "--parallel"
+            ],
+            "dependsOn": "CMake: build",
+            "problemMatcher": []
+        }
+    ]
+}

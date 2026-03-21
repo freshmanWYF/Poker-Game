@@ -1,0 +1,5 @@
+D:/PokerServer/build/CMakeFiles/PokerGame.dir
+D:/PokerServer/build/CMakeFiles/edit_cache.dir
+D:/PokerServer/build/CMakeFiles/rebuild_cache.dir
+D:/PokerServer/build/CMakeFiles/PokerGame_autogen_timestamp_deps.dir
+D:/PokerServer/build/CMakeFiles/PokerGame_autogen.dir

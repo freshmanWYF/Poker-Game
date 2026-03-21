@@ -1,0 +1,26 @@
+# ninja log v6
+4564	17970	7957249824395365	CMakeFiles/PokerGame.dir/PokerGame_autogen/EWIEGA46WW/qrc_resources.cpp.obj	b8230ebda6cf055
+11	323	7957678640735075	PokerGame_autogen/timestamp	46cfd46bfa72f693
+11	323	7957678640735075	D:/PokerServer/build/PokerGame_autogen/timestamp	46cfd46bfa72f693
+322	2412	7957661100378350	CMakeFiles/PokerGame.dir/src/network/NetworkManager.cpp.obj	41912a2f56a8314c
+766	1151	7957175831587171	clean	c6b33aad8e4c4d0
+11	323	7957678640735075	PokerGame_autogen/mocs_compilation.cpp	46cfd46bfa72f693
+31307	33605	7957671258125162	CMakeFiles/PokerGame.dir/src/ai/SimpleAI.cpp.obj	a77b0f01d96f8ea7
+4526	6051	7957249824005777	CMakeFiles/PokerGame.dir/src/core/Deck.cpp.obj	140dcbff3e7a9133
+11	323	7957678640735075	D:/PokerServer/build/PokerGame_autogen/mocs_compilation.cpp	46cfd46bfa72f693
+4523	5935	7957249823973887	CMakeFiles/PokerGame.dir/src/core/Card.cpp.obj	324b21992e208ede
+4529	5938	7957249824039062	CMakeFiles/PokerGame.dir/src/core/Hand.cpp.obj	8215dad42a8f6191
+4531	5935	7957249824065063	CMakeFiles/PokerGame.dir/src/core/Player.cpp.obj	58486062b4f7be1f
+31294	33624	7957671257985298	CMakeFiles/PokerGame.dir/src/core/GameEngine.cpp.obj	67cf4c37781041cf
+4555	6237	7957249824292401	CMakeFiles/PokerGame.dir/src/utils/Logger.cpp.obj	f50bf6ec736b93a0
+31275	34286	7957671257787555	CMakeFiles/PokerGame.dir/PokerGame_autogen/mocs_compilation.cpp.obj	dd6f1371f88ec630
+4548	6664	7957249824230092	CMakeFiles/PokerGame.dir/src/ui/CardWidget.cpp.obj	44d49013c7966c13
+4544	6605	7957249824188696	CMakeFiles/PokerGame.dir/src/ui/PlayerWidget.cpp.obj	c24e38fcbe9905ce
+31328	34440	7957671258329298	CMakeFiles/PokerGame.dir/src/controller/GameController.cpp.obj	a298da0933bdb322
+31154	31725	7957176153451326	PokerGame_autogen/EWIEGA46WW/qrc_resources.cpp	30efaa73e83fe5bb
+31285	34126	7957671257893365	CMakeFiles/PokerGame.dir/src/main.cpp.obj	bf3dd71fa7a8b5a8
+324	2569	7957678643869916	CMakeFiles/PokerGame.dir/src/ui/MainWindow.cpp.obj	fc4c98da24000e2c
+2569	3693	7957678666312256	PokerGame.exe	eefbf5e2344df907
+3	1281	7957679474433461	build.ninja	bcb3617f0b040e63
+31154	31725	7957176153451326	D:/PokerServer/build/PokerGame_autogen/EWIEGA46WW/qrc_resources.cpp	30efaa73e83fe5bb
+3	765	7957175823956705	CMakeFiles/clean.additional	2d038b013ec24202
