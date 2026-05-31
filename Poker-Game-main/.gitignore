@@ -1,0 +1,41 @@
+# Build artifacts
+build/
+dist/
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+
+# Qt build
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile*
+*.mak
+*.ninja
+.ninja_*
+
+# Qt MOC/UIC/RCC outputs
+*_autogen/
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+
+# IDE
+.vscode/
+.idea/
+*.pro.user
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Credentials
+*.env
+*.pem
+*.key
