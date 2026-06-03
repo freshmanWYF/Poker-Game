@@ -2,3 +2,4 @@ build/
 dist/
 .cache/
 compile_commands.json
+PokerGame_autogen/
