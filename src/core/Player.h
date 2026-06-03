@@ -11,7 +11,9 @@ public:
 
     int getId() const { return m_id; }
     QString getName() const { return m_name; }
+    void setName(const QString& name) { m_name = name; }
     int getChips() const { return m_chips; }
+    void setChips(int chips) { m_chips = chips; }
     void addChips(int amount) { m_chips += amount; }
     void removeChips(int amount) { m_chips -= amount; }
 
@@ -21,6 +23,7 @@ public:
     GameConstants::PlayerStatus getStatus() const { return m_status; }
     void setStatus(GameConstants::PlayerStatus status) { m_status = status; }
 
+    void setIsAI(bool isAI) { m_isAI = isAI; }
     bool isAI() const { return m_isAI; }
     bool isActive() const { return m_status == GameConstants::Active; }
     bool isSeen() const { return m_isSeen; }

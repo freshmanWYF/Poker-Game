@@ -9,6 +9,7 @@
 #include <QtWidgets/QLabel>
 #include <QtCore/QString>
 #include <QtCore/QList>
+#include <QtCore/QTimer>
 #include <QtWidgets/QListWidget>
 #include "PlayerWidget.h"
 #include "../core/GameEngine.h"
@@ -26,7 +27,11 @@ public:
     void clearConsumptionLog();
     void reinitAIWidgets(int count);
     void setGameRunning(bool running);
-    
+    void revealPlayerTemporarily(int playerId, int durationMs = 2000);
+    void showQRCode(const QString& url);
+    void setPlayerCountdown(int playerId, int seconds);
+    void resetAllCountdowns();
+
     // 动画接口
     void playDealingAnimation();
     void playChipAnimation(int fromPlayerId, bool toPot);
@@ -46,7 +51,7 @@ signals:
     void compareClicked(int targetPlayerId);
     void startGameClicked();
     void playerCountChanged(int count);
-    
+
     // 联机信号
     void createRoomClicked();
     void joinRoomClicked(const QString& address);
@@ -54,11 +59,11 @@ signals:
 private:
     QList<PlayerWidget*> m_aiWidgets;
     PlayerWidget* m_humanWidget;
-    
+
     QLabel* m_potLabel;
     QLabel* m_betLabel;
     QListWidget* m_consumptionList;
-    
+
     QPushButton* m_btnSee;
     QPushButton* m_btnFold;
     QPushButton* m_btnCall;
@@ -68,6 +73,9 @@ private:
     QPushButton* m_btnPlayerCount;
     QPushButton* m_btnHost;
     QPushButton* m_btnJoin;
+    QPushButton* m_btnPlayAgain;
+    QPushButton* m_btnRules;
+    QPushButton* m_btnStats;
 
     void setupUI();
     QHBoxLayout* m_aiAreaLayout;

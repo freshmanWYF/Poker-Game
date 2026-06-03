@@ -10,21 +10,24 @@ PlayerWidget::PlayerWidget(QWidget* parent) : QWidget(parent) {
 
     // 顶部：玩家信息行 (头像 + 姓名 + 筹码)
     auto infoLayout = new QHBoxLayout();
-    
+
     // 模拟头像
     auto avatarLabel = new QLabel(this);
     avatarLabel->setFixedSize(40, 40);
     avatarLabel->setStyleSheet("background-color: #444; border-radius: 20px; border: 1px solid #666;");
     avatarLabel->setAlignment(Qt::AlignCenter);
     avatarLabel->setText("👤");
-    
+
     auto nameChipLayout = new QVBoxLayout();
     m_nameLabel = new QLabel(this);
     m_chipsLabel = new QLabel(this);
+    m_countdownLabel = new QLabel(this);
     m_nameLabel->setStyleSheet("font-weight: bold; font-size: 13px; color: #FFD700;");
     m_chipsLabel->setStyleSheet("font-size: 11px; color: #00FF00;");
+    m_countdownLabel->setStyleSheet("font-size: 11px; color: #FF6600; font-weight: bold;");
     nameChipLayout->addWidget(m_nameLabel);
     nameChipLayout->addWidget(m_chipsLabel);
+    nameChipLayout->addWidget(m_countdownLabel);
     
     infoLayout->addWidget(avatarLabel);
     infoLayout->addLayout(nameChipLayout);
@@ -47,6 +50,20 @@ PlayerWidget::PlayerWidget(QWidget* parent) : QWidget(parent) {
     mainLayout->addLayout(infoLayout);
     mainLayout->addLayout(cardLayout);
     mainLayout->addWidget(m_statusLabel);
+
+    // 初始化倒计时定时器
+    m_countdownTimer = new QTimer(this);
+    m_countdownTimer->setInterval(1000);
+    m_countdownRemaining = 0;
+    m_countdownLabel->setText("");
+    connect(m_countdownTimer, &QTimer::timeout, this, [this]() {
+        if (m_countdownRemaining > 0) {
+            --m_countdownRemaining;
+            setCountdown(m_countdownRemaining);
+        } else {
+            m_countdownTimer->stop();
+        }
+    });
 
     // 初始状态
     updateStyle(false);
@@ -82,7 +99,7 @@ void PlayerWidget::updateStyle(bool isCurrentTurn) {
 }
 
 void PlayerWidget::updatePlayer(const Player* player, bool revealCards, bool isCurrentTurn) {
-    m_nameLabel->setText(player->getName() + (player->isAI() ? " (AI)" : " (我)"));
+    m_nameLabel->setText(player->getName());
     m_chipsLabel->setText(QString("筹码: %1").arg(player->getChips()));
     
     QString statusText;
@@ -111,6 +128,45 @@ void PlayerWidget::updatePlayer(const Player* player, bool revealCards, bool isC
             m_cardWidgets[i]->setFaceDown(!revealCards);
         }
     }
+}
+
+void PlayerWidget::setCountdown(int seconds) {
+    if (seconds < 0) {
+        m_countdownLabel->setText("");
+        return;
+    }
+    QString color = "#FF6600";
+    if (seconds <= 3) {
+        color = "#FF0000"; // 红色警告
+        m_countdownLabel->setStyleSheet(
+            QString("font-size: 13px; font-weight: bold; color: %1;").arg(color));
+    } else if (seconds <= 5) {
+        m_countdownLabel->setStyleSheet(
+            QString("font-size: 11px; font-weight: bold; color: %1;").arg(color));
+    } else {
+        m_countdownLabel->setStyleSheet(
+            QString("font-size: 11px; color: %1;").arg(color));
+    }
+    m_countdownLabel->setText(QString("⏱ %1s").arg(seconds));
+}
+
+void PlayerWidget::startCountdown(int seconds) {
+    m_countdownTimer->stop();
+    m_countdownRemaining = seconds;
+    setCountdown(seconds);
+    m_countdownTimer->start();
+}
+
+void PlayerWidget::resetCountdown() {
+    m_countdownTimer->stop();
+    m_countdownRemaining = 0;
+    m_countdownLabel->setText("");
+}
+
+void PlayerWidget::stopCountdown() {
+    m_countdownTimer->stop();
+    m_countdownRemaining = 0;
+    m_countdownLabel->setText("");
 }
 
 QPoint PlayerWidget::getCardGlobalPos(int cardIndex) const {

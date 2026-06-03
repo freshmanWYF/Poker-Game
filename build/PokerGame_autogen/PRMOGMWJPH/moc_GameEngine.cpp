@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'GameEngine.h'
 **
-** Created by: The Qt Meta Object Compiler version 68 (Qt 6.8.3)
+** Created by: The Qt Meta Object Compiler version 69 (Qt 6.10.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -17,8 +17,8 @@
 #include <QtCore/qxptype_traits.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'GameEngine.h' doesn't include <QObject>."
-#elif Q_MOC_OUTPUT_REVISION != 68
-#error "This file was generated using the moc from 6.8.3. It"
+#elif Q_MOC_OUTPUT_REVISION != 69
+#error "This file was generated using the moc from 6.10.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -34,97 +34,85 @@ namespace {
 struct qt_meta_tag_ZN10GameEngineE_t {};
 } // unnamed namespace
 
+template <> constexpr inline auto GameEngine::qt_create_metaobjectdata<qt_meta_tag_ZN10GameEngineE_t>()
+{
+    namespace QMC = QtMocConstants;
+    QtMocHelpers::StringRefStorage qt_stringData {
+        "GameEngine",
+        "gameStateChanged",
+        "",
+        "turnStarted",
+        "playerId",
+        "playerActed",
+        "action",
+        "amount",
+        "potChanged",
+        "newPot",
+        "betChanged",
+        "newBet",
+        "phaseChanged",
+        "GameConstants::GamePhase",
+        "newPhase",
+        "gameOver",
+        "winnerId",
+        "compareResult",
+        "loserId",
+        "winnerType",
+        "loserType",
+        "roundCompleted",
+        "pot"
+    };
 
-#ifdef QT_MOC_HAS_STRINGDATA
-static constexpr auto qt_meta_stringdata_ZN10GameEngineE = QtMocHelpers::stringData(
-    "GameEngine",
-    "gameStateChanged",
-    "",
-    "turnStarted",
-    "playerId",
-    "playerActed",
-    "action",
-    "amount",
-    "potChanged",
-    "newPot",
-    "betChanged",
-    "newBet",
-    "phaseChanged",
-    "GameConstants::GamePhase",
-    "newPhase",
-    "gameOver",
-    "winnerId"
-);
-#else  // !QT_MOC_HAS_STRINGDATA
-#error "qtmochelpers.h not found or too old."
-#endif // !QT_MOC_HAS_STRINGDATA
-
-Q_CONSTINIT static const uint qt_meta_data_ZN10GameEngineE[] = {
-
- // content:
-      12,       // revision
-       0,       // classname
-       0,    0, // classinfo
-       7,   14, // methods
-       0,    0, // properties
-       0,    0, // enums/sets
-       0,    0, // constructors
-       0,       // flags
-       7,       // signalCount
-
- // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   56,    2, 0x06,    1 /* Public */,
-       3,    1,   57,    2, 0x06,    2 /* Public */,
-       5,    3,   60,    2, 0x06,    4 /* Public */,
-       8,    1,   67,    2, 0x06,    8 /* Public */,
-      10,    1,   70,    2, 0x06,   10 /* Public */,
-      12,    1,   73,    2, 0x06,   12 /* Public */,
-      15,    1,   76,    2, 0x06,   14 /* Public */,
-
- // signals: parameters
-    QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,    4,
-    QMetaType::Void, QMetaType::Int, QMetaType::QString, QMetaType::Int,    4,    6,    7,
-    QMetaType::Void, QMetaType::Int,    9,
-    QMetaType::Void, QMetaType::Int,   11,
-    QMetaType::Void, 0x80000000 | 13,   14,
-    QMetaType::Void, QMetaType::Int,   16,
-
-       0        // eod
-};
-
+    QtMocHelpers::UintData qt_methods {
+        // Signal 'gameStateChanged'
+        QtMocHelpers::SignalData<void()>(1, 2, QMC::AccessPublic, QMetaType::Void),
+        // Signal 'turnStarted'
+        QtMocHelpers::SignalData<void(int)>(3, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Int, 4 },
+        }}),
+        // Signal 'playerActed'
+        QtMocHelpers::SignalData<void(int, const QString &, int)>(5, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Int, 4 }, { QMetaType::QString, 6 }, { QMetaType::Int, 7 },
+        }}),
+        // Signal 'potChanged'
+        QtMocHelpers::SignalData<void(int)>(8, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Int, 9 },
+        }}),
+        // Signal 'betChanged'
+        QtMocHelpers::SignalData<void(int)>(10, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Int, 11 },
+        }}),
+        // Signal 'phaseChanged'
+        QtMocHelpers::SignalData<void(GameConstants::GamePhase)>(12, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { 0x80000000 | 13, 14 },
+        }}),
+        // Signal 'gameOver'
+        QtMocHelpers::SignalData<void(int)>(15, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Int, 16 },
+        }}),
+        // Signal 'compareResult'
+        QtMocHelpers::SignalData<void(int, int, const QString &, const QString &)>(17, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Int, 16 }, { QMetaType::Int, 18 }, { QMetaType::QString, 19 }, { QMetaType::QString, 20 },
+        }}),
+        // Signal 'roundCompleted'
+        QtMocHelpers::SignalData<void(int, int)>(21, 2, QMC::AccessPublic, QMetaType::Void, {{
+            { QMetaType::Int, 16 }, { QMetaType::Int, 22 },
+        }}),
+    };
+    QtMocHelpers::UintData qt_properties {
+    };
+    QtMocHelpers::UintData qt_enums {
+    };
+    return QtMocHelpers::metaObjectData<GameEngine, qt_meta_tag_ZN10GameEngineE_t>(QMC::MetaObjectFlag{}, qt_stringData,
+            qt_methods, qt_properties, qt_enums);
+}
 Q_CONSTINIT const QMetaObject GameEngine::staticMetaObject = { {
     QMetaObject::SuperData::link<QObject::staticMetaObject>(),
-    qt_meta_stringdata_ZN10GameEngineE.offsetsAndSizes,
-    qt_meta_data_ZN10GameEngineE,
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN10GameEngineE_t>.stringdata,
+    qt_staticMetaObjectStaticContent<qt_meta_tag_ZN10GameEngineE_t>.data,
     qt_static_metacall,
     nullptr,
-    qt_incomplete_metaTypeArray<qt_meta_tag_ZN10GameEngineE_t,
-        // Q_OBJECT / Q_GADGET
-        QtPrivate::TypeAndForceComplete<GameEngine, std::true_type>,
-        // method 'gameStateChanged'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'turnStarted'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        // method 'playerActed'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        // method 'potChanged'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        // method 'betChanged'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        // method 'phaseChanged'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<GameConstants::GamePhase, std::false_type>,
-        // method 'gameOver'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>
-    >,
+    qt_staticMetaObjectRelocatingContent<qt_meta_tag_ZN10GameEngineE_t>.metaTypes,
     nullptr
 } };
 
@@ -134,66 +122,36 @@ void GameEngine::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: _t->gameStateChanged(); break;
-        case 1: _t->turnStarted((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 2: _t->playerActed((*reinterpret_cast< std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[3]))); break;
-        case 3: _t->potChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 4: _t->betChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 5: _t->phaseChanged((*reinterpret_cast< std::add_pointer_t<GameConstants::GamePhase>>(_a[1]))); break;
-        case 6: _t->gameOver((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 1: _t->turnStarted((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 2: _t->playerActed((*reinterpret_cast<std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<int>>(_a[3]))); break;
+        case 3: _t->potChanged((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 4: _t->betChanged((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 5: _t->phaseChanged((*reinterpret_cast<std::add_pointer_t<GameConstants::GamePhase>>(_a[1]))); break;
+        case 6: _t->gameOver((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 7: _t->compareResult((*reinterpret_cast<std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<int>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[3])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[4]))); break;
+        case 8: _t->roundCompleted((*reinterpret_cast<std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<int>>(_a[2]))); break;
         default: ;
         }
     }
     if (_c == QMetaObject::IndexOfMethod) {
-        int *result = reinterpret_cast<int *>(_a[0]);
-        {
-            using _q_method_type = void (GameEngine::*)();
-            if (_q_method_type _q_method = &GameEngine::gameStateChanged; *reinterpret_cast<_q_method_type *>(_a[1]) == _q_method) {
-                *result = 0;
-                return;
-            }
-        }
-        {
-            using _q_method_type = void (GameEngine::*)(int );
-            if (_q_method_type _q_method = &GameEngine::turnStarted; *reinterpret_cast<_q_method_type *>(_a[1]) == _q_method) {
-                *result = 1;
-                return;
-            }
-        }
-        {
-            using _q_method_type = void (GameEngine::*)(int , const QString & , int );
-            if (_q_method_type _q_method = &GameEngine::playerActed; *reinterpret_cast<_q_method_type *>(_a[1]) == _q_method) {
-                *result = 2;
-                return;
-            }
-        }
-        {
-            using _q_method_type = void (GameEngine::*)(int );
-            if (_q_method_type _q_method = &GameEngine::potChanged; *reinterpret_cast<_q_method_type *>(_a[1]) == _q_method) {
-                *result = 3;
-                return;
-            }
-        }
-        {
-            using _q_method_type = void (GameEngine::*)(int );
-            if (_q_method_type _q_method = &GameEngine::betChanged; *reinterpret_cast<_q_method_type *>(_a[1]) == _q_method) {
-                *result = 4;
-                return;
-            }
-        }
-        {
-            using _q_method_type = void (GameEngine::*)(GameConstants::GamePhase );
-            if (_q_method_type _q_method = &GameEngine::phaseChanged; *reinterpret_cast<_q_method_type *>(_a[1]) == _q_method) {
-                *result = 5;
-                return;
-            }
-        }
-        {
-            using _q_method_type = void (GameEngine::*)(int );
-            if (_q_method_type _q_method = &GameEngine::gameOver; *reinterpret_cast<_q_method_type *>(_a[1]) == _q_method) {
-                *result = 6;
-                return;
-            }
-        }
+        if (QtMocHelpers::indexOfMethod<void (GameEngine::*)()>(_a, &GameEngine::gameStateChanged, 0))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (GameEngine::*)(int )>(_a, &GameEngine::turnStarted, 1))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (GameEngine::*)(int , const QString & , int )>(_a, &GameEngine::playerActed, 2))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (GameEngine::*)(int )>(_a, &GameEngine::potChanged, 3))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (GameEngine::*)(int )>(_a, &GameEngine::betChanged, 4))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (GameEngine::*)(GameConstants::GamePhase )>(_a, &GameEngine::phaseChanged, 5))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (GameEngine::*)(int )>(_a, &GameEngine::gameOver, 6))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (GameEngine::*)(int , int , const QString & , const QString & )>(_a, &GameEngine::compareResult, 7))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (GameEngine::*)(int , int )>(_a, &GameEngine::roundCompleted, 8))
+            return;
     }
 }
 
@@ -205,7 +163,7 @@ const QMetaObject *GameEngine::metaObject() const
 void *GameEngine::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
-    if (!strcmp(_clname, qt_meta_stringdata_ZN10GameEngineE.stringdata0))
+    if (!strcmp(_clname, qt_staticMetaObjectStaticContent<qt_meta_tag_ZN10GameEngineE_t>.strings))
         return static_cast<void*>(this);
     return QObject::qt_metacast(_clname);
 }
@@ -216,14 +174,14 @@ int GameEngine::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 9)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 9;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 9)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 7;
+        _id -= 9;
     }
     return _id;
 }
@@ -237,42 +195,48 @@ void GameEngine::gameStateChanged()
 // SIGNAL 1
 void GameEngine::turnStarted(int _t1)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
-    QMetaObject::activate(this, &staticMetaObject, 1, _a);
+    QMetaObject::activate<void>(this, &staticMetaObject, 1, nullptr, _t1);
 }
 
 // SIGNAL 2
 void GameEngine::playerActed(int _t1, const QString & _t2, int _t3)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t3))) };
-    QMetaObject::activate(this, &staticMetaObject, 2, _a);
+    QMetaObject::activate<void>(this, &staticMetaObject, 2, nullptr, _t1, _t2, _t3);
 }
 
 // SIGNAL 3
 void GameEngine::potChanged(int _t1)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
-    QMetaObject::activate(this, &staticMetaObject, 3, _a);
+    QMetaObject::activate<void>(this, &staticMetaObject, 3, nullptr, _t1);
 }
 
 // SIGNAL 4
 void GameEngine::betChanged(int _t1)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
-    QMetaObject::activate(this, &staticMetaObject, 4, _a);
+    QMetaObject::activate<void>(this, &staticMetaObject, 4, nullptr, _t1);
 }
 
 // SIGNAL 5
 void GameEngine::phaseChanged(GameConstants::GamePhase _t1)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
-    QMetaObject::activate(this, &staticMetaObject, 5, _a);
+    QMetaObject::activate<void>(this, &staticMetaObject, 5, nullptr, _t1);
 }
 
 // SIGNAL 6
 void GameEngine::gameOver(int _t1)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
-    QMetaObject::activate(this, &staticMetaObject, 6, _a);
+    QMetaObject::activate<void>(this, &staticMetaObject, 6, nullptr, _t1);
+}
+
+// SIGNAL 7
+void GameEngine::compareResult(int _t1, int _t2, const QString & _t3, const QString & _t4)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 7, nullptr, _t1, _t2, _t3, _t4);
+}
+
+// SIGNAL 8
+void GameEngine::roundCompleted(int _t1, int _t2)
+{
+    QMetaObject::activate<void>(this, &staticMetaObject, 8, nullptr, _t1, _t2);
 }
 QT_WARNING_POP

@@ -40,6 +40,8 @@ signals:
     void betChanged(int newBet);
     void phaseChanged(GameConstants::GamePhase newPhase);
     void gameOver(int winnerId);
+    void compareResult(int winnerId, int loserId, const QString& winnerType, const QString& loserType);
+    void roundCompleted(int winnerId, int pot); // 一局结束（含奖池金额）
 
 private:
     Deck m_deck;

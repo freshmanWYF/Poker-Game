@@ -112,26 +112,40 @@ void GameEngine::applyNetworkSnapshot(int pot, int bet, int turnIndex, GameConst
 }
 
 void GameEngine::compare(int playerId1, int playerId2) {
-    auto p1 = m_players[playerId1];
-    auto p2 = m_players[playerId2];
+    if (m_currentPhase != GameConstants::Betting) return;
 
-    setPhase(GameConstants::Comparing);
+    // 比牌需要支付当前应下注额的 2 倍
+    int cost = calculateRequiredBet(playerId1) * 2;
+    Player* p1 = m_players[playerId1];
+    Player* p2 = m_players[playerId2];
 
-    // 比牌要扣钱，通常是当前应下注额的两倍
-    int compareCost = calculateRequiredBet(playerId1) * 2;
-    p1->removeChips(compareCost);
-    m_currentPot += compareCost;
-    emit playerActed(playerId1, "比牌支出", compareCost);
+    if (!p1->isActive() || !p2->isActive()) return;
+    if (p1->getChips() < cost) return;
 
-    int res = Hand::compare(p1->getHand(), p2->getHand());
-    if (res >= 0) {
+    p1->removeChips(cost);
+    m_currentPot += cost;
+    emit potChanged(m_currentPot);
+
+    int result = Hand::compare(p1->getHand(), p2->getHand());
+    QString p1Type = p1->getHand().typeName();
+    QString p2Type = p2->getHand().typeName();
+
+    if (result >= 0) {
+        // p1 赢（result==1 或 0 时发起者胜）
         p2->setStatus(GameConstants::Lost);
+        emit playerActed(playerId1, QString("比牌胜出 (%1 vs %2)").arg(p1Type, p2Type), cost);
+        emit playerActed(playerId2, QString("比牌落败 (%1 vs %2)").arg(p2Type, p1Type), 0);
+        emit compareResult(playerId1, playerId2, p1Type, p2Type);
     } else {
+        // p2 赢
         p1->setStatus(GameConstants::Lost);
+        emit playerActed(playerId2, QString("比牌胜出 (%1 vs %2)").arg(p2Type, p1Type), 0);
+        emit playerActed(playerId1, QString("比牌落败 (%1 vs %2)").arg(p1Type, p2Type), cost);
+        emit compareResult(playerId2, playerId1, p2Type, p1Type);
     }
 
     if (checkGameOver()) return;
-    
+
     setPhase(GameConstants::Betting);
     nextTurn();
 }
@@ -166,9 +180,11 @@ bool GameEngine::checkGameOver() {
         m_isGameRunning = false;
         setPhase(GameConstants::Settlement);
         if (lastActive) {
-            lastActive->addChips(m_currentPot);
+            int potWon = m_currentPot;
+            lastActive->addChips(potWon);
             lastActive->setStatus(GameConstants::Winner);
-            emit playerActed(lastActive->getId(), "赢得奖池", m_currentPot);
+            emit playerActed(lastActive->getId(), "赢得奖池", potWon);
+            emit roundCompleted(lastActive->getId(), potWon);
             emit gameOver(lastActive->getId());
         }
         return true;

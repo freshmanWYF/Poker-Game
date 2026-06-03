@@ -32,6 +32,16 @@ public:
      * @brief 手牌强度评估 (0-100)
      */
     virtual float evaluateHandStrength(const Hand& hand) = 0;
+
+    /**
+     * @brief AI 标签（用于 UI 显示）
+     */
+    virtual QString label() const { return ""; }
+
+    /**
+     * @brief AI 类型名称
+     */
+    virtual QString name() const { return "标准型"; }
 };
 
 #endif // AISTRATEGY_H

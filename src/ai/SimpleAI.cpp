@@ -9,8 +9,9 @@ float SimpleAI::evaluateHandStrength(const Hand& hand) {
     auto type = hand.getType();
     auto cards = hand.getCards();
 
-    // 1. 基础牌型分 (0-80)
+    // 1. 基础牌型分 (0-85)
     switch (type) {
+        case GameConstants::SPECIAL_235: score = 85.0f; break;   // 特殊235（可反杀豹子）
         case GameConstants::Triple: score = 80.0f; break;        // 豹子
         case GameConstants::FlushStraight: score = 70.0f; break; // 顺金
         case GameConstants::Flush: score = 55.0f; break;         // 金花

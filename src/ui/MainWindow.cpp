@@ -1,9 +1,16 @@
 #include "MainWindow.h"
+#include "../utils/GameStore.h"
+#include "../network/HttpServer.h"
 #include <QtWidgets/QInputDialog>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QMessageBox>
 #include <QtCore/QPropertyAnimation>
 #include <QtCore/QSequentialAnimationGroup>
 #include <QtCore/QParallelAnimationGroup>
 #include <QtCore/QTime>
+#include <QtGui/QClipboard>
+#include <QtGui/QGuiApplication>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     setupUI();
@@ -101,6 +108,9 @@ void MainWindow::setupUI() {
     m_btnPlayerCount = new QPushButton("玩家人数", this);
     m_btnHost = new QPushButton("创建房间", this);
     m_btnJoin = new QPushButton("加入房间", this);
+    m_btnPlayAgain = new QPushButton("再来一局", this);
+    m_btnRules = new QPushButton("📖 规则", this);
+    m_btnStats = new QPushButton("📊 战绩", this);
 
     // 按钮美化
     m_btnStart->setStyleSheet(
@@ -122,6 +132,29 @@ void MainWindow::setupUI() {
     m_btnHost->setStyleSheet(netBtnStyle);
     m_btnJoin->setStyleSheet(netBtnStyle);
 
+    // "再来一局"按钮样式（醒目绿色）
+    m_btnPlayAgain->setStyleSheet(
+        "QPushButton { "
+        "  background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #2ecc71, stop:1 #27ae60); "
+        "  color: white; border: 2px solid #2ecc71; border-radius: 8px; font-size: 15px; padding: 12px 25px; "
+        "} "
+        "QPushButton:hover { background-color: #27ae60; border-color: #2ecc71; } "
+        "QPushButton:pressed { background-color: #1e8449; }"
+    );
+    m_btnPlayAgain->hide(); // 初始隐藏
+
+    // "规则"按钮样式
+    m_btnRules->setStyleSheet(
+        "QPushButton { background-color: #8e44ad; color: white; border: 1px solid #9b59b6; padding: 8px 12px; } "
+        "QPushButton:hover { background-color: #9b59b6; }"
+    );
+
+    // "战绩"按钮样式
+    m_btnStats->setStyleSheet(
+        "QPushButton { background-color: #2980b9; color: white; border: 1px solid #3498db; padding: 8px 12px; } "
+        "QPushButton:hover { background-color: #3498db; }"
+    );
+
     btnArea->addWidget(m_btnSee);
     btnArea->addWidget(m_btnFold);
     btnArea->addWidget(m_btnCall);
@@ -130,20 +163,18 @@ void MainWindow::setupUI() {
     btnArea->addWidget(m_btnPlayerCount);
     btnArea->addWidget(m_btnHost);
     btnArea->addWidget(m_btnJoin);
+    btnArea->addWidget(m_btnRules);
+    btnArea->addWidget(m_btnStats);
     
     bottomLayout->addLayout(btnArea);
     bottomLayout->addStretch();
+    bottomLayout->addWidget(m_btnPlayAgain);
     bottomLayout->addWidget(m_btnStart);
     mainLayout->addLayout(bottomLayout);
 
     // 连接信号
     connect(m_btnPlayerCount, &QPushButton::clicked, [this]() {
         if (m_gameRunning) return;
-        if (m_hasStartedGame) return; // 游戏已经开始过，不允许修改人数
-        if (!m_btnPlayerCount->isEnabled()) return; // 再次确保禁用时不会触发
-        if (m_lastEngine && m_lastEngine->getCurrentPhase() != GameConstants::Settlement) {
-            return; // 游戏未结束时绝对不允许修改人数
-        }
         bool ok;
         int count = QInputDialog::getInt(this, "玩家人数", "选择 AI 玩家数量 (1-5):", 3, 1, 5, 1, &ok);
         if (ok) emit playerCountChanged(count);
@@ -157,12 +188,58 @@ void MainWindow::setupUI() {
         int requiredBet = m_lastEngine->calculateRequiredBet(currentPlayerId);
         int playerChips = m_lastEngine->getPlayers()[currentPlayerId]->getChips();
 
-        bool ok;
-        // 解除加注金额上限：将最大值设为一个极大的数（如 1,000,000），或者根据玩家实际筹码设定
-        // 这里设为 100 万，确保玩家可以自由加注
-        int amount = QInputDialog::getInt(this, "加注", "请输入加注金额:", 
-                                          requiredBet, requiredBet, 1000000, 10, &ok);
-        if (ok) emit raiseClicked(amount);
+        // 自定义加注对话框：4 个档位 + 自定义
+        QDialog dlg(this);
+        dlg.setWindowTitle("加注");
+        dlg.setMinimumWidth(300);
+        auto* layout = new QVBoxLayout(&dlg);
+
+        auto* label = new QLabel(QString("当前需跟注: %1 | 你的筹码: %2").arg(requiredBet).arg(playerChips), &dlg);
+        label->setStyleSheet("color: #FFD700; font-size: 13px;");
+        layout->addWidget(label);
+
+        // 4 个标准档位按钮
+        struct RaiseOption { QString text; int amount; };
+        QList<RaiseOption> options = {
+            { QString("跟注 (%1)").arg(requiredBet), requiredBet },
+            { QString("2x (%1)").arg(requiredBet * 2), requiredBet * 2 },
+            { QString("3x (%1)").arg(requiredBet * 3), requiredBet * 3 },
+            { QString("All-in (%1)").arg(playerChips), playerChips },
+        };
+
+        int selectedAmount = -1;
+        for (const auto& opt : options) {
+            if (opt.amount > playerChips) continue;
+            auto* btn = new QPushButton(opt.text, &dlg);
+            btn->setStyleSheet(
+                "QPushButton { background-color: #d4af37; color: white; font-weight: bold; "
+                "padding: 10px; border-radius: 6px; font-size: 14px; } "
+                "QPushButton:hover { background-color: #daa520; }"
+            );
+            layout->addWidget(btn);
+            connect(btn, &QPushButton::clicked, [&dlg, &selectedAmount, opt]() {
+                selectedAmount = opt.amount;
+                dlg.accept();
+            });
+        }
+
+        // 自定义金额输入
+        auto* customBtn = new QPushButton("自定义金额...", &dlg);
+        customBtn->setStyleSheet("QPushButton { background-color: #555; color: #ccc; padding: 8px; border-radius: 4px; } "
+                                 "QPushButton:hover { background-color: #666; }");
+        layout->addWidget(customBtn);
+        connect(customBtn, &QPushButton::clicked, [&dlg, &selectedAmount, requiredBet, playerChips]() {
+            bool ok;
+            int amount = QInputDialog::getInt(&dlg, "自定义加注", "请输入金额:",
+                                              requiredBet, requiredBet, playerChips, 10, &ok);
+            if (ok) {
+                selectedAmount = amount;
+                dlg.accept();
+            }
+        });
+
+        dlg.exec();
+        if (selectedAmount > 0) emit raiseClicked(selectedAmount);
     });
     connect(m_btnCompare, &QPushButton::clicked, [this]() {
         if (!m_lastEngine) return;
@@ -191,6 +268,68 @@ void MainWindow::setupUI() {
         }
     });
     connect(m_btnStart, &QPushButton::clicked, this, &MainWindow::startGameClicked);
+    connect(m_btnPlayAgain, &QPushButton::clicked, this, &MainWindow::startGameClicked);
+    connect(m_btnRules, &QPushButton::clicked, [this]() {
+        QMessageBox::information(this, "📖 炸金花规则",
+            "<h2>🃏 炸金花规则说明</h2>"
+            "<h3>牌型大小（从低到高）</h3>"
+            "<table cellpadding='4'>"
+            "<tr><td><b>单张</b></td><td>三张无任何组合，比最大牌</td></tr>"
+            "<tr><td><b>对子</b></td><td>两张同点数，比对子大小</td></tr>"
+            "<tr><td><b>顺子</b></td><td>三张连续点数 (A-2-3 最小)</td></tr>"
+            "<tr><td><b>金花</b></td><td>三张同花色</td></tr>"
+            "<tr><td><b>顺金</b></td><td>三张同花色且连续</td></tr>"
+            "<tr><td><b>豹子</b></td><td>三张同点数</td></tr>"
+            "<tr><td><b style='color:red;'>特殊235</b></td><td>不同花色的 2、3、5 — <b>可反杀豹子！</b></td></tr>"
+            "</table>"
+            "<h3>下注规则</h3>"
+            "<ul>"
+            "<li><b>蒙牌</b>：未看牌时按当前底注下注</li>"
+            "<li><b>看牌</b>：看牌后下注金额翻倍</li>"
+            "<li><b>比牌</b>：需支付当前应下注额的 2 倍</li>"
+            "<li><b>花色大小</b>：♠ 黑桃 > ♥ 红桃 > ♣ 梅花 > ♦ 方块</li>"
+            "</ul>"
+            "<h3>特殊规则</h3>"
+            "<p>🔴 <b>2-3-5 反杀豹子</b>：不同花色的 2、3、5 组合可以打败豹子，"
+            "但输给其他所有牌型。</p>"
+            "<p>🟡 <b>A-2-3 顺子</b>：A-2-3 是最小的顺子，小于 2-3-4。</p>"
+        );
+    });
+    connect(m_btnStats, &QPushButton::clicked, [this]() {
+        // 构建战绩统计 + 最近对局历史
+        auto allStats = GameStore::instance().getAllStats();
+        auto history = GameStore::instance().getMatchHistory(10);
+
+        QString html = "<h2>📊 玩家战绩统计</h2>"
+                       "<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;'>"
+                       "<tr style='background:#333; color:#FFD700;'>"
+                       "<th>玩家</th><th>胜</th><th>败</th><th>赢筹码</th><th>输筹码</th><th>最佳牌型</th></tr>";
+
+        for (const auto& s : allStats) {
+            int total = s.wins + s.losses;
+            QString winRate = total > 0 ? QString("%1%").arg(s.wins * 100 / total) : "-";
+            html += QString("<tr><td>%1</td><td>%2 (%6)</td><td>%3</td><td style='color:#00FF00;'>+%4</td>"
+                            "<td style='color:#FF4444;'>-%5</td><td>%7</td></tr>")
+                    .arg(s.name).arg(s.wins).arg(s.losses)
+                    .arg(s.totalChipsWon).arg(s.totalChipsLost)
+                    .arg(winRate).arg(s.bestHand.isEmpty() ? "-" : s.bestHand);
+        }
+        html += "</table>";
+
+        if (!history.isEmpty()) {
+            html += "<h2>📜 最近对局</h2>"
+                    "<table border='1' cellpadding='5' cellspacing='0' style='border-collapse:collapse;'>"
+                    "<tr style='background:#333; color:#FFD700;'>"
+                    "<th>时间</th><th>赢家</th><th>牌型</th><th>奖池</th></tr>";
+            for (const auto& rec : history) {
+                html += QString("<tr><td>%1</td><td>%2</td><td>%3</td><td>%4</td></tr>")
+                        .arg(rec.time).arg(rec.winner).arg(rec.winnerType).arg(rec.pot);
+            }
+            html += "</table>";
+        }
+
+        QMessageBox::information(this, "📊 战绩统计", html);
+    });
     connect(m_btnHost, &QPushButton::clicked, this, &MainWindow::createRoomClicked);
     connect(m_btnJoin, &QPushButton::clicked, [this]() {
         bool ok;
@@ -266,24 +405,27 @@ void MainWindow::setActionButtonsEnabled(bool enabled) {
 
 void MainWindow::setGameRunning(bool running) {
     m_gameRunning = running;
-    
+
     // 如果游戏开始，标记游戏已经开始过
     if (running) {
         m_hasStartedGame = true;
+        m_btnPlayAgain->hide();
     }
-    
+
     // 游戏运行期间，禁用"开始游戏"、"玩家人数"以及联机按钮
-    // 游戏结束后，如果已经开始过游戏，继续禁用"玩家人数"按钮
     m_btnStart->setEnabled(!running);
-    m_btnPlayerCount->setEnabled(!running && !m_hasStartedGame);
-    m_btnPlayerCount->setAttribute(Qt::WA_TransparentForMouseEvents, running || m_hasStartedGame);
+    m_btnPlayerCount->setEnabled(!running);
     m_btnHost->setEnabled(!running);
     m_btnJoin->setEnabled(!running);
-    
+
     if (!running) {
         // 游戏结束时，确保所有操作按钮也禁用
         setActionButtonsEnabled(false);
         m_btnSee->setEnabled(false);
+        // 显示"再来一局"按钮
+        if (m_hasStartedGame) {
+            m_btnPlayAgain->show();
+        }
     }
 }
 
@@ -385,4 +527,98 @@ void MainWindow::clearConsumptionLog() {
     if (m_consumptionList) {
         m_consumptionList->clear();
     }
+}
+
+void MainWindow::revealPlayerTemporarily(int playerId, int durationMs) {
+    if (!m_lastEngine) return;
+
+    PlayerWidget* targetWidget = nullptr;
+    if (playerId == m_localPlayerId) {
+        targetWidget = m_humanWidget;
+    } else {
+        int opponentIdx = playerId - 1;
+        if (opponentIdx >= 0 && opponentIdx < m_aiWidgets.size()) {
+            targetWidget = m_aiWidgets[opponentIdx];
+        }
+    }
+    if (!targetWidget) return;
+
+    auto players = m_lastEngine->getPlayers();
+    if (playerId < 0 || playerId >= players.size()) return;
+
+    // 翻开牌面
+    targetWidget->updatePlayer(players[playerId], true, false);
+
+    // 定时翻回
+    QTimer::singleShot(durationMs, this, [this, playerId]() {
+        if (!m_lastEngine) return;
+        auto players = m_lastEngine->getPlayers();
+        if (playerId >= 0 && playerId < players.size()) {
+            bool isGameOver = (m_lastEngine->getCurrentPhase() == GameConstants::Settlement);
+            PlayerWidget* w = (playerId == m_localPlayerId) ? m_humanWidget
+                : ((playerId - 1 < m_aiWidgets.size()) ? m_aiWidgets[playerId - 1] : nullptr);
+            if (w && !isGameOver) {
+                bool reveal = (playerId == m_localPlayerId) && players[playerId]->isSeen();
+                w->updatePlayer(players[playerId], reveal, false);
+            }
+        }
+    });
+}
+
+void MainWindow::setPlayerCountdown(int playerId, int seconds) {
+    PlayerWidget* targetWidget = nullptr;
+    if (playerId == m_localPlayerId || playerId == -1) {
+        targetWidget = m_humanWidget;
+    } else if (playerId > 0) {
+        int opponentIdx = playerId - 1;
+        if (opponentIdx >= 0 && opponentIdx < m_aiWidgets.size()) {
+            targetWidget = m_aiWidgets[opponentIdx];
+        }
+    }
+    if (targetWidget) {
+        if (seconds <= 0) {
+            targetWidget->stopCountdown();
+        } else {
+            targetWidget->startCountdown(seconds);
+        }
+    }
+}
+
+void MainWindow::resetAllCountdowns() {
+    if (m_humanWidget) m_humanWidget->resetCountdown();
+    for (auto* w : m_aiWidgets) {
+        if (w) w->resetCountdown();
+    }
+}
+
+void MainWindow::showQRCode(const QString& url) {
+    QGuiApplication::clipboard()->setText(url);
+    QMessageBox box(this);
+    box.setWindowTitle("扫码加入游戏");
+
+    QByteArray qrPng = HttpServer::generateQRCodePNG(url, 256);
+    QString html;
+    if (!qrPng.isEmpty()) {
+        QString base64 = QString::fromLatin1(qrPng.toBase64());
+        html = QString("<div style='text-align:center;'>"
+                        "<h3>房间已创建！</h3>"
+                        "<p>手机浏览器扫码加入：</p>"
+                        "<img src='data:image/png;base64,%1' width='200' height='200' />"
+                        "<p style='font-size:16px;color:#2980b9;font-weight:bold;margin-top:10px;'>%2</p>"
+                        "<p style='color:#888;font-size:12px;'>（地址已复制到剪贴板）</p>"
+                        "</div>")
+                       .arg(base64, url);
+    } else {
+        html = QString("<div style='text-align:center;'>"
+                        "<h3>房间已创建！</h3>"
+                        "<p>手机浏览器打开以下地址：</p>"
+                        "<p style='font-size:16px;color:#2980b9;font-weight:bold;'>%1</p>"
+                        "<p style='color:#888;'>（地址已复制到剪贴板）</p>"
+                        "</div>")
+                       .arg(url);
+    }
+
+    box.setText(html);
+    box.setStandardButtons(QMessageBox::Ok);
+    box.exec();
 }

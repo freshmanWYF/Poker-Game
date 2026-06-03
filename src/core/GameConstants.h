@@ -25,7 +25,8 @@ namespace GameConstants {
         Straight,        // 顺子
         Flush,           // 金花 (同花)
         FlushStraight,   // 顺金 (同花顺)
-        Triple           // 豹子 (三张相同)
+        Triple,          // 豹子 (三张相同)
+        SPECIAL_235      // 特殊235（不同花色的2、3、5，可反杀豹子）
     };
 
     // 玩家状态
