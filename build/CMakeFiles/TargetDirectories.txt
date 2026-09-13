@@ -1,5 +1,0 @@
-/home/wyf/pokergame/build/CMakeFiles/PokerGame.dir
-/home/wyf/pokergame/build/CMakeFiles/edit_cache.dir
-/home/wyf/pokergame/build/CMakeFiles/rebuild_cache.dir
-/home/wyf/pokergame/build/CMakeFiles/PokerGame_autogen_timestamp_deps.dir
-/home/wyf/pokergame/build/CMakeFiles/PokerGame_autogen.dir
