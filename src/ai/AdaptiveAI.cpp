@@ -9,7 +9,7 @@ float AdaptiveAI::evaluateHandStrength(const Hand& hand) {
     auto cards = hand.getCards();
 
     switch (type) {
-        case GameConstants::SPECIAL_235: score = 85.0f; break;
+        case GameConstants::SPECIAL_235: score = 0.0f; break;
         case GameConstants::Triple: score = 80.0f; break;
         case GameConstants::FlushStraight: score = 70.0f; break;
         case GameConstants::Flush: score = 55.0f; break;
@@ -26,7 +26,7 @@ float AdaptiveAI::evaluateHandStrength(const Hand& hand) {
     return score;
 }
 
-void AdaptiveAI::observeOpponents(const GameEngine* engine, int selfId) {
+void AdaptiveAI::observeOpponents(const GameEngine* engine, int) {
     // 简单观察：通过当前底注和奖池推断对手行为
     // 底注高说明有人频繁加注，奖池小说明弃牌多
     int currentBet = engine->getCurrentBet();
@@ -47,7 +47,7 @@ void AdaptiveAI::observeOpponents(const GameEngine* engine, int selfId) {
     }
 }
 
-float AdaptiveAI::opponentAggression(const GameEngine* engine, int selfId) const {
+float AdaptiveAI::opponentAggression(const GameEngine*, int) const {
     if (m_totalOpponentActions == 0) return 0.5f; // 无数据时中性
     return static_cast<float>(m_opponentRaiseCount) / m_totalOpponentActions;
 }

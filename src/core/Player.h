@@ -13,7 +13,7 @@ public:
     QString getName() const { return m_name; }
     void setName(const QString& name) { m_name = name; }
     int getChips() const { return m_chips; }
-    void setChips(int chips) { m_chips = chips; }
+    void setChips(int chips) { m_chips = qMax(0, chips); }
     void addChips(int amount) { m_chips += amount; }
     void removeChips(int amount) { m_chips -= amount; }
 

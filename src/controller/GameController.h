@@ -5,7 +5,7 @@
 #include <QtCore/QTimer>
 #include <QtCore/QList>
 #include <QtCore/QString>
-#include <QtCore/QSet>
+#include <QtCore/QElapsedTimer>
 #include "../core/GameEngine.h"
 #include "../ui/MainWindow.h"
 #include "../ai/AIStrategy.h"
@@ -27,15 +27,14 @@ signals:
 
 public slots:
     void handleTurnStarted(int playerId);
-    void handleTurnEnded(int playerId);
     void handleGameOver(int winnerId);
-    void handlePhaseChanged(GameConstants::GamePhase phase);
     void handlePlayerActed(int playerId, const QString& action, int amount);
     void handleRoundCompleted(int winnerId, int pot);
     void onPlayerCountChanged(int count);
     void processAI();
 
     void onStartGame();
+    void onRestartTable(int startingChips);
     void onFold();
     void onCall();
     void onRaise(int amount);
@@ -76,12 +75,20 @@ private:
     QList<int> m_wsClientIds;      // WebSocket 客户端 ID 列表
     QList<QString> m_wsClientNames; // WebSocket 客户端名字
     QMap<int, int> m_wsClientPlayerMap; // WebSocket clientId → 玩家索引
-    QList<int> m_joinClientIds;
-    QList<QString> m_joinClientNames;
-    QString m_hostName;
-    QSet<int> m_pendingReplacements; // 正在被替换为 AI 的玩家索引（防止竞态）
+    QMap<int, int> m_tcpClientPlayerMap;
+    QList<int> m_roundStartingChips;
+    QElapsedTimer m_turnClock;
+    int m_turnSerial = 0;
+    int m_tableSerial = 0;
+    bool m_isRemoteClient = false;
+
 
     void updateView();
+    int claimSeat(const QString& name);
+    void replaceWithAI(int playerId);
+    bool applyAction(int playerId, const QJsonObject& data);
+    bool localCanAct() const;
+    QJsonObject stateForPlayer(int playerId) const;
     void sendStateToAll(); // 房主同步状态给所有客户端（旧TCP协议）
     void clearAIStrategies();
     AIStrategy* createRandomStrategy(); // 随机创建一种 AI 策略

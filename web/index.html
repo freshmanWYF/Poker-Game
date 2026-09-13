@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>炸金花 - 手机端</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div id="header">
+  <div class="header-title">
+    <div class="logo">🃏</div>
+    <span class="title-text">炸金花</span>
+  </div>
+  <div class="header-info">
+    <span id="phase-label">等待中</span>
+    <span id="pot-label">奖池: <span id="pot-val">0</span></span>
+    <div id="conn-dot"></div>
+  </div>
+</div>
+
+<div id="connection-status" role="status" aria-live="polite">正在连接房主…</div>
+<div id="table-area"></div>
+
+<div id="action-area">
+  <div class="action-header">
+    <span class="label">⚡ 你的回合</span>
+    <span id="countdown" aria-label="本回合剩余秒数">15</span>
+  </div>
+  <div class="action-btns">
+    <button class="action-btn btn-see" id="btn-see">
+      <span class="btn-label">看牌</span>
+    </button>
+    <button class="action-btn btn-fold" id="btn-fold">
+      <span class="btn-label">弃牌</span>
+    </button>
+    <button class="action-btn btn-call" id="btn-call">
+      <span class="btn-label">跟注</span>
+      <span class="btn-sub" id="call-amount">0</span>
+    </button>
+    <button class="action-btn btn-raise" id="btn-raise">
+      <span class="btn-label">加注</span>
+    </button>
+    <button class="action-btn btn-compare" id="btn-compare">
+      <span class="btn-label">比牌</span>
+    </button>
+  </div>
+</div>
+
+<div id="dialog-overlay">
+  <div id="dialog-box">
+    <h3 id="dialog-title">选择</h3>
+    <div class="sub" id="dialog-sub"></div>
+    <div class="option-list" id="dialog-options"></div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<div id="result-overlay">
+  <div class="result-title" id="result-title">结算</div>
+  <div class="result-pot" id="result-pot">奖池: 0</div>
+  <button class="result-btn" onclick="document.getElementById('result-overlay').className=''">确定</button>
+</div>
+
+<script src="/game.js"></script>
+</body>
+</html>

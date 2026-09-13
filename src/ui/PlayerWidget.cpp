@@ -20,6 +20,8 @@ PlayerWidget::PlayerWidget(QWidget* parent) : QWidget(parent) {
 
     auto nameChipLayout = new QVBoxLayout();
     m_nameLabel = new QLabel(this);
+    m_nameLabel->setTextFormat(Qt::PlainText);
+    m_nameLabel->setWordWrap(true);
     m_chipsLabel = new QLabel(this);
     m_countdownLabel = new QLabel(this);
     m_nameLabel->setStyleSheet("font-weight: bold; font-size: 13px; color: #FFD700;");
@@ -35,7 +37,7 @@ PlayerWidget::PlayerWidget(QWidget* parent) : QWidget(parent) {
     
     // 中间：手牌区域
     auto cardLayout = new QHBoxLayout();
-    cardLayout->setSpacing(-30); // 卡牌重叠效果
+    cardLayout->setSpacing(4); // 卡牌重叠效果
     for (int i = 0; i < GameConstants::CARDS_PER_PLAYER; ++i) {
         auto cw = new CardWidget(this);
         m_cardWidgets.append(cw);
@@ -51,19 +53,7 @@ PlayerWidget::PlayerWidget(QWidget* parent) : QWidget(parent) {
     mainLayout->addLayout(cardLayout);
     mainLayout->addWidget(m_statusLabel);
 
-    // 初始化倒计时定时器
-    m_countdownTimer = new QTimer(this);
-    m_countdownTimer->setInterval(1000);
-    m_countdownRemaining = 0;
     m_countdownLabel->setText("");
-    connect(m_countdownTimer, &QTimer::timeout, this, [this]() {
-        if (m_countdownRemaining > 0) {
-            --m_countdownRemaining;
-            setCountdown(m_countdownRemaining);
-        } else {
-            m_countdownTimer->stop();
-        }
-    });
 
     // 初始状态
     updateStyle(false);
@@ -114,7 +104,7 @@ void PlayerWidget::updatePlayer(const Player* player, bool revealCards, bool isC
         case GameConstants::Folded:  statusText = "已弃牌"; break;
         case GameConstants::Lost:    statusText = "比牌输"; break;
         case GameConstants::Winner:  statusText = "★ 赢家 ★"; break;
-        default:                     statusText = ""; break;
+        default:                     statusText = player->getChips() < GameConstants::MIN_BET ? "筹码不足，暂不参局" : "等待开局"; break;
     }
     m_statusLabel->setText(statusText);
 
@@ -127,6 +117,8 @@ void PlayerWidget::updatePlayer(const Player* player, bool revealCards, bool isC
             m_cardWidgets[i]->setCard(cards[i]);
             m_cardWidgets[i]->setFaceDown(!revealCards);
         }
+    } else {
+        for (auto* widget : m_cardWidgets) widget->setFaceDown(true);
     }
 }
 
@@ -150,22 +142,7 @@ void PlayerWidget::setCountdown(int seconds) {
     m_countdownLabel->setText(QString("⏱ %1s").arg(seconds));
 }
 
-void PlayerWidget::startCountdown(int seconds) {
-    m_countdownTimer->stop();
-    m_countdownRemaining = seconds;
-    setCountdown(seconds);
-    m_countdownTimer->start();
-}
-
 void PlayerWidget::resetCountdown() {
-    m_countdownTimer->stop();
-    m_countdownRemaining = 0;
-    m_countdownLabel->setText("");
-}
-
-void PlayerWidget::stopCountdown() {
-    m_countdownTimer->stop();
-    m_countdownRemaining = 0;
     m_countdownLabel->setText("");
 }
 

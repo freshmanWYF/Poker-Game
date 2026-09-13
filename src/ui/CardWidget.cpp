@@ -5,7 +5,7 @@
 #include <QtWidgets/QGraphicsDropShadowEffect>
 
 CardWidget::CardWidget(QWidget* parent) : QWidget(parent), m_isFaceDown(true) {
-    setFixedSize(100, 140);
+    setFixedSize(76, 106);
     
     // 添加阴影效果
     auto shadow = new QGraphicsDropShadowEffect(this);
@@ -31,7 +31,25 @@ void CardWidget::paintEvent(QPaintEvent*) {
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
-    QString imgPath = m_isFaceDown ? ":/poker/Background.png" : m_card.imagePath();
+    if (m_isFaceDown) {
+        const QRectF cardRect = QRectF(rect()).adjusted(2, 2, -2, -2);
+        QLinearGradient gradient(cardRect.topLeft(), cardRect.bottomRight());
+        gradient.setColorAt(0, QColor("#24485d"));
+        gradient.setColorAt(1, QColor("#102936"));
+        painter.setBrush(gradient);
+        painter.setPen(QPen(QColor("#d5bc75"), 1.5));
+        painter.drawRoundedRect(cardRect, 7, 7);
+        painter.setBrush(Qt::NoBrush);
+        painter.setPen(QPen(QColor("#55767f"), 1));
+        painter.drawRoundedRect(cardRect.adjusted(6, 6, -6, -6), 4, 4);
+        painter.setPen(QColor("#e4ce91"));
+        QFont font = painter.font();
+        font.setPixelSize(34);
+        painter.setFont(font);
+        painter.drawText(cardRect, Qt::AlignCenter, QStringLiteral("♠"));
+        return;
+    }
+    QString imgPath = m_card.imagePath();
     
     // 尝试加载图片
     QPixmap pixmap(imgPath);

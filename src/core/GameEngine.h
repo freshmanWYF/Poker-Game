@@ -12,27 +12,31 @@ class GameEngine : public QObject {
     Q_OBJECT
 public:
     GameEngine();
-    virtual ~GameEngine() = default;
+    ~GameEngine() override;
 
     void addPlayer(const QString& name, bool isAI = false);
     void resetPlayers();
-    void startGame();
+    bool resetTable(int startingChips);
+    bool startGame();
     void nextTurn();
-    void seeCards(int playerId);
-    void fold(int playerId);
-    void bet(int playerId, int amount);
-    void compare(int playerId1, int playerId2);
+    bool seeCards(int playerId);
+    bool fold(int playerId);
+    bool bet(int playerId, int amount);
+    bool compare(int playerId1, int playerId2);
+    bool canAct(int playerId) const;
     int calculateRequiredBet(int playerId) const;
     void applyNetworkSnapshot(int pot, int bet, int turnIndex, GameConstants::GamePhase phase);
 
     // Getters
     const QList<Player*>& getPlayers() const { return m_players; }
+    int getStartingChips() const { return m_startingChips; }
     int getCurrentPot() const { return m_currentPot; }
     int getCurrentBet() const { return m_currentBet; }
     int getCurrentTurnIndex() const { return m_currentTurnIndex; }
     GameConstants::GamePhase getCurrentPhase() const { return m_currentPhase; }
 
 signals:
+    void actionRejected(int playerId, const QString& reason);
     void gameStateChanged();
     void turnStarted(int playerId);
     void playerActed(int playerId, const QString& action, int amount);
@@ -45,6 +49,7 @@ signals:
 
 private:
     Deck m_deck;
+    int m_startingChips = GameConstants::INITIAL_CHIPS;
     QList<Player*> m_players;
     int m_currentPot;
     int m_currentBet;

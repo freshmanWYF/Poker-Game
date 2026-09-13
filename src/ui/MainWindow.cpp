@@ -5,6 +5,8 @@
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QScrollArea>
+#include <QtGui/QResizeEvent>
 #include <QtCore/QPropertyAnimation>
 #include <QtCore/QSequentialAnimationGroup>
 #include <QtCore/QParallelAnimationGroup>
@@ -14,8 +16,8 @@
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     setupUI();
-    setWindowTitle("炸金花 - 单机版");
-    resize(1000, 700);
+    setWindowTitle("炸金花 · 局域网牌桌");
+    resize(1200, 820);
 }
 
 void MainWindow::setupUI() {
@@ -43,6 +45,9 @@ void MainWindow::setupUI() {
         "  background-color: rgba(0, 0, 0, 120); color: #FFD700; border: 1px solid #555; "
         "  border-radius: 8px; font-family: 'Segoe UI'; font-size: 11px; "
         "}"
+        "QScrollBar:vertical { background: #122a21; width: 10px; border-radius: 5px; }"
+        "QScrollBar::handle:vertical { background: #587366; min-height: 30px; border-radius: 5px; }"
+        "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }"
     );
     centralWidget->setObjectName("centralWidget");
 
@@ -51,17 +56,25 @@ void MainWindow::setupUI() {
     auto sideLabel = new QLabel("💰 资金流水", this);
     sideLabel->setStyleSheet("font-weight: bold; font-size: 14px; color: #FFD700;");
     m_consumptionList = new QListWidget(this);
+    m_consumptionList->setMinimumWidth(180);
+    m_consumptionList->setMaximumWidth(260);
+    m_consumptionList->setWordWrap(true);
     sidePanel->addWidget(sideLabel);
     sidePanel->addWidget(m_consumptionList);
     globalLayout->addLayout(sidePanel, 1); // 侧边栏占 1 份比例
 
-    // AI 玩家展示区域 (顶部一排，增加间距)
-    m_aiAreaLayout = new QHBoxLayout();
-    m_aiAreaLayout->setContentsMargins(20, 20, 20, 20);
-    m_aiAreaLayout->setSpacing(30);
-    mainLayout->addLayout(m_aiAreaLayout);
-
-    mainLayout->addStretch();
+    auto* opponentsScroll = new QScrollArea(this);
+    opponentsScroll->setWidgetResizable(true);
+    opponentsScroll->setFrameShape(QFrame::NoFrame);
+    opponentsScroll->setStyleSheet("QScrollArea, QScrollArea > QWidget > QWidget { background: transparent; }");
+    auto* opponents = new QWidget;
+    m_aiAreaLayout = new QGridLayout(opponents);
+    m_aiAreaLayout->setContentsMargins(6, 6, 6, 6);
+    m_aiAreaLayout->setSpacing(12);
+    m_aiAreaLayout->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+    opponentsScroll->setWidget(opponents);
+    opponentsScroll->setMinimumHeight(220);
+    mainLayout->addWidget(opponentsScroll, 1);
 
     // 游戏状态展示区域 (中间，大字体)
     auto statusArea = new QHBoxLayout();
@@ -72,8 +85,12 @@ void MainWindow::setupUI() {
     
     // 增加一个装饰性的奖池背景
     auto potContainer = new QWidget(this);
-    potContainer->setStyleSheet("background: rgba(0,0,0,100); border-radius: 20px; padding: 10px 30px; border: 1px solid #FFD700;");
+    potContainer->setObjectName("potContainer");
+    potContainer->setStyleSheet("QWidget#potContainer { background: rgba(0,0,0,100); border-radius: 14px; border: 1px solid #9c8544; }");
     auto potLayout = new QVBoxLayout(potContainer);
+    potLayout->setContentsMargins(20, 10, 20, 10);
+    m_betLabel->setTextFormat(Qt::PlainText);
+    m_betLabel->setWordWrap(true);
     potLayout->addWidget(m_potLabel, 0, Qt::AlignCenter);
     potLayout->addWidget(m_betLabel, 0, Qt::AlignCenter);
 
@@ -82,12 +99,11 @@ void MainWindow::setupUI() {
     statusArea->addStretch();
     mainLayout->addLayout(statusArea);
 
-    mainLayout->addStretch();
 
     // 真人玩家展示区域 (底部中央)
     auto humanArea = new QHBoxLayout();
     m_humanWidget = new PlayerWidget(this);
-    m_humanWidget->setFixedWidth(320);
+    m_humanWidget->setFixedWidth(280);
     m_humanWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     humanArea->addStretch();
     humanArea->addWidget(m_humanWidget);
@@ -109,6 +125,9 @@ void MainWindow::setupUI() {
     m_btnHost = new QPushButton("创建房间", this);
     m_btnJoin = new QPushButton("加入房间", this);
     m_btnPlayAgain = new QPushButton("再来一局", this);
+    m_btnRestart = new QPushButton("重开牌桌", this);
+    m_btnRestart->setObjectName("restartTableButton");
+    m_btnRestart->setToolTip("重新设置所有玩家的起始筹码，保留座位和历史战绩");
     m_btnRules = new QPushButton("📖 规则", this);
     m_btnStats = new QPushButton("📊 战绩", this);
 
@@ -160,37 +179,66 @@ void MainWindow::setupUI() {
     btnArea->addWidget(m_btnCall);
     btnArea->addWidget(m_btnRaise);
     btnArea->addWidget(m_btnCompare);
-    btnArea->addWidget(m_btnPlayerCount);
-    btnArea->addWidget(m_btnHost);
-    btnArea->addWidget(m_btnJoin);
-    btnArea->addWidget(m_btnRules);
-    btnArea->addWidget(m_btnStats);
+    auto* utilityArea = new QHBoxLayout();
+    utilityArea->addWidget(m_btnPlayerCount);
+    utilityArea->addWidget(m_btnRestart);
+    utilityArea->addWidget(m_btnHost);
+    utilityArea->addWidget(m_btnJoin);
+    utilityArea->addWidget(m_btnRules);
+    utilityArea->addWidget(m_btnStats);
     
     bottomLayout->addLayout(btnArea);
     bottomLayout->addStretch();
     bottomLayout->addWidget(m_btnPlayAgain);
     bottomLayout->addWidget(m_btnStart);
     mainLayout->addLayout(bottomLayout);
+    utilityArea->addStretch();
+    mainLayout->addLayout(utilityArea);
 
     // 连接信号
+    connect(m_btnRestart, &QPushButton::clicked, this, [this]() {
+        if (m_remoteClient || !m_lastEngine) return;
+        QInputDialog dialog(this);
+        dialog.setObjectName("restartTableDialog");
+        dialog.setWindowTitle("重开牌桌");
+        dialog.setLabelText("设置每位玩家的起始筹码：\n"
+                            "确认后结束当前对局，清空奖池和手牌，统一重置筹码。\n"
+                            "保留已连接玩家及历史战绩，回到待开局状态。\n"
+                            "取消则继续当前牌局；选择期间倒计时仍会运行。");
+        dialog.setInputMode(QInputDialog::IntInput);
+        dialog.setIntRange(GameConstants::MIN_STARTING_CHIPS, GameConstants::MAX_STARTING_CHIPS);
+        dialog.setIntStep(100);
+        dialog.setIntValue(m_lastEngine->getStartingChips());
+        dialog.setOkButtonText("确认重开");
+        dialog.setCancelButtonText("取消");
+        if (dialog.exec() == QDialog::Accepted && !m_remoteClient)
+            emit restartTableClicked(dialog.intValue());
+    });
     connect(m_btnPlayerCount, &QPushButton::clicked, [this]() {
         if (m_gameRunning) return;
         bool ok;
-        int count = QInputDialog::getInt(this, "玩家人数", "选择 AI 玩家数量 (1-5):", 3, 1, 5, 1, &ok);
+        int count = QInputDialog::getInt(this, "玩家人数", "牌桌总人数（包含房主和手机玩家，空位由 AI 补足）：",
+            m_lastEngine ? m_lastEngine->getPlayers().size() : 4, 2, GameConstants::MAX_PLAYERS, 1, &ok);
         if (ok) emit playerCountChanged(count);
     });
     connect(m_btnSee, &QPushButton::clicked, this, &MainWindow::seeCardsClicked);
     connect(m_btnFold, &QPushButton::clicked, this, &MainWindow::foldClicked);
     connect(m_btnCall, &QPushButton::clicked, this, &MainWindow::callClicked);
     connect(m_btnRaise, &QPushButton::clicked, [this]() {
-        if (!m_lastEngine) return;
-        int currentPlayerId = m_lastEngine->getCurrentTurnIndex();
+        if (!m_lastEngine || !m_lastEngine->canAct(m_localPlayerId)) return;
+        int currentPlayerId = m_localPlayerId;
         int requiredBet = m_lastEngine->calculateRequiredBet(currentPlayerId);
         int playerChips = m_lastEngine->getPlayers()[currentPlayerId]->getChips();
+        const int step = m_lastEngine->getPlayers()[currentPlayerId]->isSeen() ? 2 : 1;
+        const int maximumBet = playerChips - playerChips % step;
+        if (maximumBet < requiredBet) return;
 
-        // 自定义加注对话框：4 个档位 + 自定义
+    // 加注金额始终基于本地玩家，而非弹窗关闭时的其他玩家。
         QDialog dlg(this);
         dlg.setWindowTitle("加注");
+        connect(m_lastEngine, &GameEngine::gameStateChanged, &dlg, [this, &dlg]() {
+            if (!m_lastEngine->canAct(m_localPlayerId)) dlg.reject();
+        });
         dlg.setMinimumWidth(300);
         auto* layout = new QVBoxLayout(&dlg);
 
@@ -199,12 +247,12 @@ void MainWindow::setupUI() {
         layout->addWidget(label);
 
         // 4 个标准档位按钮
-        struct RaiseOption { QString text; int amount; };
+        struct RaiseOption { QString text; qint64 amount; };
         QList<RaiseOption> options = {
             { QString("跟注 (%1)").arg(requiredBet), requiredBet },
-            { QString("2x (%1)").arg(requiredBet * 2), requiredBet * 2 },
-            { QString("3x (%1)").arg(requiredBet * 3), requiredBet * 3 },
-            { QString("All-in (%1)").arg(playerChips), playerChips },
+            { QString("2x (%1)").arg(qint64(requiredBet) * 2), qint64(requiredBet) * 2 },
+            { QString("3x (%1)").arg(qint64(requiredBet) * 3), qint64(requiredBet) * 3 },
+            { QString("最大可下注 (%1)").arg(maximumBet), maximumBet },
         };
 
         int selectedAmount = -1;
@@ -228,12 +276,12 @@ void MainWindow::setupUI() {
         customBtn->setStyleSheet("QPushButton { background-color: #555; color: #ccc; padding: 8px; border-radius: 4px; } "
                                  "QPushButton:hover { background-color: #666; }");
         layout->addWidget(customBtn);
-        connect(customBtn, &QPushButton::clicked, [&dlg, &selectedAmount, requiredBet, playerChips]() {
+        connect(customBtn, &QPushButton::clicked, [&dlg, &selectedAmount, requiredBet, maximumBet, step]() {
             bool ok;
             int amount = QInputDialog::getInt(&dlg, "自定义加注", "请输入金额:",
-                                              requiredBet, requiredBet, playerChips, 10, &ok);
+                                              requiredBet, requiredBet, maximumBet, step, &ok);
             if (ok) {
-                selectedAmount = amount;
+                selectedAmount = amount - amount % step;
                 dlg.accept();
             }
         });
@@ -250,7 +298,7 @@ void MainWindow::setupUI() {
         
         for (auto p : players) {
             if (p->isActive() && p->getId() != m_localPlayerId) {
-                activeOpponentNames << p->getName();
+                activeOpponentNames << QString("%1 号 · %2").arg(p->getId() + 1).arg(p->getName());
                 opponentIds << p->getId();
             }
         }
@@ -310,7 +358,7 @@ void MainWindow::setupUI() {
             QString winRate = total > 0 ? QString("%1%").arg(s.wins * 100 / total) : "-";
             html += QString("<tr><td>%1</td><td>%2 (%6)</td><td>%3</td><td style='color:#00FF00;'>+%4</td>"
                             "<td style='color:#FF4444;'>-%5</td><td>%7</td></tr>")
-                    .arg(s.name).arg(s.wins).arg(s.losses)
+                    .arg(s.name.toHtmlEscaped()).arg(s.wins).arg(s.losses)
                     .arg(s.totalChipsWon).arg(s.totalChipsLost)
                     .arg(winRate).arg(s.bestHand.isEmpty() ? "-" : s.bestHand);
         }
@@ -323,7 +371,7 @@ void MainWindow::setupUI() {
                     "<th>时间</th><th>赢家</th><th>牌型</th><th>奖池</th></tr>";
             for (const auto& rec : history) {
                 html += QString("<tr><td>%1</td><td>%2</td><td>%3</td><td>%4</td></tr>")
-                        .arg(rec.time).arg(rec.winner).arg(rec.winnerType).arg(rec.pot);
+                        .arg(rec.time.toHtmlEscaped()).arg(rec.winner.toHtmlEscaped()).arg(rec.winnerType.toHtmlEscaped()).arg(rec.pot);
             }
             html += "</table>";
         }
@@ -357,19 +405,18 @@ void MainWindow::updateUI(const GameEngine* engine) {
     if (currentPlayerId < 0 || currentPlayerId >= players.size()) {
         currentPlayerId = 0;
     }
-    auto currentPlayer = players[currentPlayerId];
     
     // 判断是否游戏结束
     bool isGameOver = (engine->getCurrentPhase() == GameConstants::Settlement);
-    bool isLocalTurn = (currentPlayerId == localId) && !isGameOver;
+    bool isLocalTurn = engine->canAct(m_localPlayerId);
 
     int opponentIdx = 0;
     for (int i = 0; i < players.size(); ++i) {
         auto player = players[i];
         bool isCurrentTurn = (i == currentPlayerId) && !isGameOver;
 
-        bool revealLocal = isGameOver || ((i == localId) && player->isSeen()) || (player->getStatus() == GameConstants::Winner);
-        bool revealOpponent = isGameOver || (player->getStatus() == GameConstants::Winner);
+        bool revealLocal = isGameOver || m_temporarilyRevealed.contains(i) || ((i == localId) && player->isSeen()) || (player->getStatus() == GameConstants::Winner);
+        bool revealOpponent = isGameOver || m_temporarilyRevealed.contains(i);
 
         if (i == localId) {
             m_humanWidget->updatePlayer(player, revealLocal, isCurrentTurn);
@@ -382,11 +429,17 @@ void MainWindow::updateUI(const GameEngine* engine) {
         }
     }
 
+    setActionButtonsEnabled(isLocalTurn);
+    const int localRequired = engine->calculateRequiredBet(localId);
+    m_btnCall->setText(QString("跟注 %1").arg(localRequired));
+    m_btnCompare->setText(QString("比牌 %1").arg(qint64(localRequired) * 2));
     m_potLabel->setText(QString("奖池: %1").arg(engine->getCurrentPot()));
     
     // 显示当前底注和当前玩家需要跟注的额度
     int requiredBet = engine->calculateRequiredBet(currentPlayerId);
-    m_betLabel->setText(QString("当前底注: %1 | 需跟注: %2").arg(engine->getCurrentBet()).arg(requiredBet));
+    m_betLabel->setText(isGameOver ? "等待房主开始下一局" :
+        QString("暗注: %1  ·  %2 操作  ·  需跟注: %3")
+            .arg(engine->getCurrentBet()).arg(players[currentPlayerId]->getName()).arg(requiredBet));
 }
 
 void MainWindow::setLocalPlayerId(int playerId) {
@@ -394,60 +447,80 @@ void MainWindow::setLocalPlayerId(int playerId) {
 }
 
 void MainWindow::setActionButtonsEnabled(bool enabled) {
-    // 基础操作按钮（弃牌、跟注等）
+    enabled = enabled && m_lastEngine && m_lastEngine->canAct(m_localPlayerId);
+    const auto* player = enabled ? m_lastEngine->getPlayers()[m_localPlayerId] : nullptr;
+    const int required = enabled ? m_lastEngine->calculateRequiredBet(m_localPlayerId) : 0;
+    m_btnSee->setEnabled(enabled && !player->isSeen());
     m_btnFold->setEnabled(enabled);
-    m_btnCall->setEnabled(enabled);
-    m_btnRaise->setEnabled(enabled);
-    m_btnCompare->setEnabled(enabled);
-    
-    // 注意：m_btnSee 的状态在 updateUI 中根据玩家是否看过牌单独控制
+    m_btnCall->setEnabled(enabled && player->getChips() >= required);
+    m_btnRaise->setEnabled(enabled && player->getChips() >= required);
+    m_btnCompare->setEnabled(enabled && player->getChips() >= qint64(required) * 2);
 }
 
 void MainWindow::setGameRunning(bool running) {
+    const bool newRound = running && !m_gameRunning;
+    if (newRound) {
+        m_temporarilyRevealed.clear();
+        ++m_displayGeneration;
+    }
     m_gameRunning = running;
+    if (running) m_hasStartedGame = true;
+    m_btnStart->setVisible(!m_hasStartedGame);
+    m_btnStart->setEnabled(!running && !m_remoteClient);
+    m_btnPlayerCount->setEnabled(!running && !m_remoteClient);
+    m_btnRestart->setEnabled(!m_remoteClient);
+    m_btnHost->setEnabled(!running && !m_remoteClient);
+    m_btnHost->setText(m_roomCreated ? "房间二维码" : "创建房间");
+    m_btnJoin->setEnabled(!running && !m_remoteClient && !m_roomCreated);
+    m_btnPlayAgain->setVisible(!running && m_hasStartedGame && !m_remoteClient);
+    if (!running) setActionButtonsEnabled(false);
+    if (newRound && m_lastEngine) updateUI(m_lastEngine);
+}
 
-    // 如果游戏开始，标记游戏已经开始过
-    if (running) {
-        m_hasStartedGame = true;
-        m_btnPlayAgain->hide();
-    }
+void MainWindow::setRemoteClient(bool remote) {
+    m_remoteClient = remote;
+    setGameRunning(m_gameRunning);
+}
 
-    // 游戏运行期间，禁用"开始游戏"、"玩家人数"以及联机按钮
-    m_btnStart->setEnabled(!running);
-    m_btnPlayerCount->setEnabled(!running);
-    m_btnHost->setEnabled(!running);
-    m_btnJoin->setEnabled(!running);
+void MainWindow::setRoomCreated(bool created) {
+    m_roomCreated = created;
+    setGameRunning(m_gameRunning);
+}
 
-    if (!running) {
-        // 游戏结束时，确保所有操作按钮也禁用
-        setActionButtonsEnabled(false);
-        m_btnSee->setEnabled(false);
-        // 显示"再来一局"按钮
-        if (m_hasStartedGame) {
-            m_btnPlayAgain->show();
-        }
-    }
+void MainWindow::resetForNewTable() {
+    ++m_displayGeneration;
+    m_temporarilyRevealed.clear();
+    m_hasStartedGame = false;
+    resetAllCountdowns();
+    clearConsumptionLog();
+    setGameRunning(false);
 }
 
 void MainWindow::reinitAIWidgets(int count) {
-    while (auto item = m_aiAreaLayout->takeAt(0)) {
-        if (auto w = item->widget()) {
-            w->deleteLater();
-        }
+    while (auto* item = m_aiAreaLayout->takeAt(0)) {
+        if (auto* widget = item->widget()) { widget->hide(); widget->deleteLater(); }
         delete item;
     }
     m_aiWidgets.clear();
-
-    m_aiAreaLayout->addStretch();
-    const int targetWidth = m_humanWidget ? m_humanWidget->width() : 320;
     for (int i = 0; i < count; ++i) {
-        auto pw = new PlayerWidget(this);
-        pw->setFixedWidth(targetWidth);
-        pw->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-        m_aiWidgets.append(pw);
-        m_aiAreaLayout->addWidget(pw);
+        auto* widget = new PlayerWidget(this);
+        widget->setFixedWidth(280);
+        m_aiWidgets.append(widget);
     }
-    m_aiAreaLayout->addStretch();
+    layoutOpponents();
+}
+
+void MainWindow::layoutOpponents() {
+    const int available = m_aiAreaLayout->parentWidget()->width() - 12;
+    const int columns = qMax(1, available / 292);
+    while (auto* item = m_aiAreaLayout->takeAt(0)) delete item;
+    for (int i = 0; i < m_aiWidgets.size(); ++i)
+        m_aiAreaLayout->addWidget(m_aiWidgets[i], i / columns, i % columns);
+}
+
+void MainWindow::resizeEvent(QResizeEvent* event) {
+    QMainWindow::resizeEvent(event);
+    QTimer::singleShot(0, this, &MainWindow::layoutOpponents);
 }
 
 void MainWindow::playDealingAnimation() {
@@ -482,6 +555,8 @@ void MainWindow::playDealingAnimation() {
 }
 
 void MainWindow::playChipAnimation(int fromPlayerId, bool toPot) {
+    auto* playerWidget = widgetForPlayer(fromPlayerId);
+    if (!playerWidget) return;
     QLabel* chip = new QLabel("💰", this);
     chip->setStyleSheet("font-size: 20px; background: transparent;");
     chip->show();
@@ -489,13 +564,13 @@ void MainWindow::playChipAnimation(int fromPlayerId, bool toPot) {
     QPoint start, end;
     if (toPot) {
         // 从玩家飞向奖池
-        PlayerWidget* fromWidget = (fromPlayerId == 0) ? m_humanWidget : m_aiWidgets[fromPlayerId-1];
+        PlayerWidget* fromWidget = playerWidget;
         start = mapFromGlobal(fromWidget->mapToGlobal(QPoint(fromWidget->width()/2, 0)));
         end = mapFromGlobal(m_potLabel->mapToGlobal(QPoint(0,0)));
     } else {
         // 从奖池飞向赢家
         start = mapFromGlobal(m_potLabel->mapToGlobal(QPoint(0,0)));
-        PlayerWidget* toWidget = (fromPlayerId == 0) ? m_humanWidget : m_aiWidgets[fromPlayerId-1];
+        PlayerWidget* toWidget = playerWidget;
         end = mapFromGlobal(toWidget->mapToGlobal(QPoint(toWidget->width()/2, 0)));
     }
 
@@ -521,6 +596,7 @@ void MainWindow::addConsumptionLog(const QString& msg, bool highlight) {
         item->setFont(font);
     }
     m_consumptionList->insertItem(0, item);
+    while (m_consumptionList->count() > 300) delete m_consumptionList->takeItem(m_consumptionList->count() - 1);
 }
 
 void MainWindow::clearConsumptionLog() {
@@ -530,58 +606,19 @@ void MainWindow::clearConsumptionLog() {
 }
 
 void MainWindow::revealPlayerTemporarily(int playerId, int durationMs) {
-    if (!m_lastEngine) return;
-
-    PlayerWidget* targetWidget = nullptr;
-    if (playerId == m_localPlayerId) {
-        targetWidget = m_humanWidget;
-    } else {
-        int opponentIdx = playerId - 1;
-        if (opponentIdx >= 0 && opponentIdx < m_aiWidgets.size()) {
-            targetWidget = m_aiWidgets[opponentIdx];
-        }
-    }
-    if (!targetWidget) return;
-
-    auto players = m_lastEngine->getPlayers();
-    if (playerId < 0 || playerId >= players.size()) return;
-
-    // 翻开牌面
-    targetWidget->updatePlayer(players[playerId], true, false);
-
-    // 定时翻回
-    QTimer::singleShot(durationMs, this, [this, playerId]() {
-        if (!m_lastEngine) return;
-        auto players = m_lastEngine->getPlayers();
-        if (playerId >= 0 && playerId < players.size()) {
-            bool isGameOver = (m_lastEngine->getCurrentPhase() == GameConstants::Settlement);
-            PlayerWidget* w = (playerId == m_localPlayerId) ? m_humanWidget
-                : ((playerId - 1 < m_aiWidgets.size()) ? m_aiWidgets[playerId - 1] : nullptr);
-            if (w && !isGameOver) {
-                bool reveal = (playerId == m_localPlayerId) && players[playerId]->isSeen();
-                w->updatePlayer(players[playerId], reveal, false);
-            }
-        }
+    if (!m_lastEngine || !widgetForPlayer(playerId)) return;
+    m_temporarilyRevealed.insert(playerId);
+    updateUI(m_lastEngine);
+    const int generation = m_displayGeneration;
+    QTimer::singleShot(durationMs, this, [this, playerId, generation]() {
+        if (generation != m_displayGeneration) return;
+        m_temporarilyRevealed.remove(playerId);
+        if (m_lastEngine) updateUI(m_lastEngine);
     });
 }
 
 void MainWindow::setPlayerCountdown(int playerId, int seconds) {
-    PlayerWidget* targetWidget = nullptr;
-    if (playerId == m_localPlayerId || playerId == -1) {
-        targetWidget = m_humanWidget;
-    } else if (playerId > 0) {
-        int opponentIdx = playerId - 1;
-        if (opponentIdx >= 0 && opponentIdx < m_aiWidgets.size()) {
-            targetWidget = m_aiWidgets[opponentIdx];
-        }
-    }
-    if (targetWidget) {
-        if (seconds <= 0) {
-            targetWidget->stopCountdown();
-        } else {
-            targetWidget->startCountdown(seconds);
-        }
-    }
+    if (auto* widget = widgetForPlayer(playerId)) widget->setCountdown(seconds > 0 ? seconds : -1);
 }
 
 void MainWindow::resetAllCountdowns() {
@@ -621,4 +658,11 @@ void MainWindow::showQRCode(const QString& url) {
     box.setText(html);
     box.setStandardButtons(QMessageBox::Ok);
     box.exec();
+}
+
+PlayerWidget* MainWindow::widgetForPlayer(int playerId) const {
+    if (playerId < 0) return nullptr;
+    if (playerId == m_localPlayerId) return m_humanWidget;
+    const int index = playerId < m_localPlayerId ? playerId : playerId - 1;
+    return index >= 0 && index < m_aiWidgets.size() ? m_aiWidgets[index] : nullptr;
 }

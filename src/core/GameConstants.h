@@ -50,6 +50,8 @@ namespace GameConstants {
     const int CARDS_PER_PLAYER = 3;
     const int INITIAL_CHIPS = 1000;
     const int MIN_BET = 10;
+    const int MIN_STARTING_CHIPS = MIN_BET * 2;
+    const int MAX_STARTING_CHIPS = 1000000;
     const int MAX_PLAYERS = 17;
     const int TOTAL_CARDS = 52;
 }

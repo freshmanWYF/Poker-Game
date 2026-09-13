@@ -10,6 +10,7 @@
 #include <QtCore/QString>
 #include <QtCore/QList>
 #include <QtCore/QTimer>
+#include <QtCore/QSet>
 #include <QtWidgets/QListWidget>
 #include "PlayerWidget.h"
 #include "../core/GameEngine.h"
@@ -27,6 +28,9 @@ public:
     void clearConsumptionLog();
     void reinitAIWidgets(int count);
     void setGameRunning(bool running);
+    void setRemoteClient(bool remote);
+    void setRoomCreated(bool created);
+    void resetForNewTable();
     void revealPlayerTemporarily(int playerId, int durationMs = 2000);
     void showQRCode(const QString& url);
     void setPlayerCountdown(int playerId, int seconds);
@@ -39,6 +43,10 @@ public:
 private:
     const GameEngine* m_lastEngine = nullptr; // 保存引擎引用用于获取玩家列表
     bool m_gameRunning = false;
+    bool m_remoteClient = false;
+    bool m_roomCreated = false;
+    QSet<int> m_temporarilyRevealed;
+    int m_displayGeneration = 0;
     bool m_hasStartedGame = false; // 标记游戏是否已经开始过
     int m_localPlayerId = 0;
 
@@ -50,6 +58,7 @@ signals:
     void raiseClicked(int amount);
     void compareClicked(int targetPlayerId);
     void startGameClicked();
+    void restartTableClicked(int startingChips);
     void playerCountChanged(int count);
 
     // 联机信号
@@ -74,11 +83,15 @@ private:
     QPushButton* m_btnHost;
     QPushButton* m_btnJoin;
     QPushButton* m_btnPlayAgain;
+    QPushButton* m_btnRestart;
     QPushButton* m_btnRules;
     QPushButton* m_btnStats;
 
     void setupUI();
-    QHBoxLayout* m_aiAreaLayout;
+    QGridLayout* m_aiAreaLayout;
+    PlayerWidget* widgetForPlayer(int playerId) const;
+    void layoutOpponents();
+    void resizeEvent(QResizeEvent* event) override;
 };
 
 #endif // MAINWINDOW_H

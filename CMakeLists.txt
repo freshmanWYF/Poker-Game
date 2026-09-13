@@ -9,21 +9,13 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-# Linux 上自动查找 Qt，Windows 上使用指定路径
-if(WIN32)
-    set(CMAKE_PREFIX_PATH "D:/QT/6.8.3/mingw_64")
-else()
-    # Linux: 让 CMake 自动找到系统 Qt
-    set(Qt6_DIR)
-    # 查找 libqrencode（二维码生成）
-    find_library(QRENCODE_LIBRARY qrencode)
-    find_path(QRENCODE_INCLUDE_DIR qrencode.h PATH_SUFFIXES qrencode)
-endif()
+# 自动查找 Qt；自定义安装可通过 -DCMAKE_PREFIX_PATH 指定。
+find_library(QRENCODE_LIBRARY qrencode)
+find_path(QRENCODE_INCLUDE_DIR qrencode.h PATH_SUFFIXES qrencode)
 
 find_package(Qt6 COMPONENTS Widgets Core Gui Network WebSockets REQUIRED)
 
 set(SOURCES
-    src/main.cpp
     src/core/Card.cpp
     src/core/Deck.cpp
     src/core/Hand.cpp
@@ -42,12 +34,13 @@ set(SOURCES
     src/network/NetworkManager.cpp
     src/network/HttpServer.cpp
     src/network/WebSocketServer.cpp
-    resources.qrc
 )
 
-add_executable(PokerGame ${SOURCES})
+add_library(PokerGameLib STATIC ${SOURCES})
+add_executable(PokerGame src/main.cpp resources.qrc)
+target_link_libraries(PokerGame PRIVATE PokerGameLib)
 
-target_include_directories(PokerGame PRIVATE 
+target_include_directories(PokerGameLib PUBLIC
     src/core 
     src/ai 
     src/ui 
@@ -56,12 +49,25 @@ target_include_directories(PokerGame PRIVATE
     src/network
 )
 
-target_link_libraries(PokerGame PRIVATE Qt6::Widgets Qt6::Core Qt6::Gui Qt6::Network Qt6::WebSockets)
+target_link_libraries(PokerGameLib PUBLIC Qt6::Widgets Qt6::Core Qt6::Gui Qt6::Network Qt6::WebSockets)
 
-if(NOT WIN32 AND QRENCODE_LIBRARY)
-    target_include_directories(PokerGame PRIVATE ${QRENCODE_INCLUDE_DIR})
-    target_link_libraries(PokerGame PRIVATE ${QRENCODE_LIBRARY})
-    target_compile_definitions(PokerGame PRIVATE HAS_QRENCODE)
+if(QRENCODE_LIBRARY AND QRENCODE_INCLUDE_DIR)
+    target_include_directories(PokerGameLib PRIVATE ${QRENCODE_INCLUDE_DIR})
+    target_link_libraries(PokerGameLib PRIVATE ${QRENCODE_LIBRARY})
+    target_compile_definitions(PokerGameLib PRIVATE HAS_QRENCODE)
+endif()
+
+include(CTest)
+if(BUILD_TESTING)
+    find_package(Qt6 COMPONENTS Test REQUIRED)
+    add_executable(PokerGameTests tests/PokerGameTests.cpp resources.qrc)
+    target_link_libraries(PokerGameTests PRIVATE PokerGameLib Qt6::Test)
+    add_test(NAME PokerGameTests COMMAND PokerGameTests)
+    set_tests_properties(PokerGameTests PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen;POKER_SCREENSHOT_DIR=${CMAKE_CURRENT_BINARY_DIR}/screenshots")
+    find_program(NODE_EXECUTABLE node)
+    if(NODE_EXECUTABLE)
+        add_test(NAME WebClientTests COMMAND ${NODE_EXECUTABLE} --test ${CMAKE_CURRENT_SOURCE_DIR}/tests/web-client.test.js)
+    endif()
 endif()
 
 if(WIN32)

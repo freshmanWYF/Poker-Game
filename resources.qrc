@@ -54,4 +54,9 @@
         <file alias="SpadeK.png">高清全套扑克牌/PNG/SpadeK.png</file>
         <file alias="SpadeQ.png">高清全套扑克牌/PNG/SpadeQ.png</file>
     </qresource>
+    <qresource prefix="/web">
+        <file alias="index.html">web/index.html</file>
+        <file alias="style.css">web/style.css</file>
+        <file alias="game.js">web/game.js</file>
+    </qresource>
 </RCC>

@@ -9,7 +9,7 @@ float CautiousAI::evaluateHandStrength(const Hand& hand) {
     auto cards = hand.getCards();
 
     switch (type) {
-        case GameConstants::SPECIAL_235: score = 85.0f; break;
+        case GameConstants::SPECIAL_235: score = 0.0f; break;
         case GameConstants::Triple: score = 80.0f; break;
         case GameConstants::FlushStraight: score = 70.0f; break;
         case GameConstants::Flush: score = 55.0f; break;

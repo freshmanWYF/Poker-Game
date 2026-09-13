@@ -5,6 +5,7 @@
 #include <QtCore/QList>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonArray>
+#include "../core/GameConstants.h"
 
 class Player;
 
@@ -42,7 +43,8 @@ public:
     static GameStore& instance();
 
     // 筹码存档
-    void saveChipState(const QList<Player*>& players);
+    void saveChipState(const QList<Player*>& players, int startingChips = GameConstants::INITIAL_CHIPS);
+    int loadStartingChips() const;
     bool hasChipSave() const;
     void loadChipState(QList<QPair<QString, int>>& outChips); // <name, chips>
     void clearChipSave();

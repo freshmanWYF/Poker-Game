@@ -5,7 +5,7 @@
             "name": "启动 PokerGame (调试)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/PokerGame",
+            "program": "${workspaceFolder}/build-review/PokerGame",
             "args": [],
             "cwd": "${workspaceFolder}",
             "environment": [
@@ -33,7 +33,7 @@
             "name": "启动 PokerGame (快速)",
             "type": "shell",
             "request": "launch",
-            "program": "${workspaceFolder}/build/PokerGame",
+            "program": "${workspaceFolder}/build-review/PokerGame",
             "args": [],
             "cwd": "${workspaceFolder}",
             "env": {

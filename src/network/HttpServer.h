@@ -2,6 +2,7 @@
 #define HTTPSERVER_H
 
 #include <QtCore/QObject>
+#include <QtCore/QMap>
 #include <QtNetwork/QTcpServer>
 #include <QtNetwork/QTcpSocket>
 
@@ -33,6 +34,7 @@ private:
 
     QTcpServer* m_server;
     int m_port = 0;
+    QMap<QTcpSocket*, QByteArray> m_buffers;
 };
 
 #endif // HTTPSERVER_H

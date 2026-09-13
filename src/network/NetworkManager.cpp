@@ -24,9 +24,10 @@ NetworkManager::~NetworkManager() {
 }
 
 bool NetworkManager::startServer(int port) {
-    if (m_server->listen(QHostAddress::Any, port)) {
+    if (m_server->isListening()) return true;
+    if (m_server->listen(QHostAddress::AnyIPv4, port)) {
         m_isHost = true;
-        m_listenPort = port;
+        m_listenPort = m_server->serverPort();
         return true;
     }
     return false;
@@ -34,7 +35,10 @@ bool NetworkManager::startServer(int port) {
 
 void NetworkManager::stopServer() {
     m_server->close();
-    for (auto socket : m_clientSockets) {
+    const auto sockets = m_clientSockets.values();
+    m_clientSockets.clear();
+    for (auto socket : sockets) {
+        socket->disconnect(this);
         socket->disconnectFromHost();
         socket->deleteLater();
     }
@@ -51,7 +55,7 @@ void NetworkManager::broadcast(const QJsonObject& msg) {
 }
 
 void NetworkManager::sendToPlayer(int playerId, const QJsonObject& msg) {
-    if (playerId >= 0 && playerId < m_clientSockets.size()) {
+    if (m_clientSockets.contains(playerId)) {
         QByteArray data = QJsonDocument(msg).toJson(QJsonDocument::Compact) + "\n";
         m_clientSockets[playerId]->write(data);
     }
@@ -107,7 +111,9 @@ QStringList NetworkManager::getJoinAddresses() const {
 }
 
 bool NetworkManager::connectToHost(const QString& address, int port) {
+    if (m_server->isListening() || port < 1 || port > 65535) return false;
     m_isHost = false;
+    m_socket->abort();
     m_socket->connectToHost(address, port);
     return m_socket->waitForConnected(3000);
 }
@@ -126,9 +132,9 @@ void NetworkManager::sendToServer(const QJsonObject& msg) {
 void NetworkManager::onNewConnection() {
     while (m_server->hasPendingConnections()) {
         QTcpSocket* clientSocket = m_server->nextPendingConnection();
-        m_clientSockets.append(clientSocket);
-        
-        int playerId = m_clientSockets.size() - 1;
+        const int playerId = m_nextClientId++;
+        m_clientSockets.insert(playerId, clientSocket);
+        clientSocket->setProperty("clientId", playerId);
         
         connect(clientSocket, &QTcpSocket::readyRead, this, &NetworkManager::onClientReadyRead);
         connect(clientSocket, &QTcpSocket::disconnected, this, &NetworkManager::onClientDisconnected);
@@ -141,7 +147,8 @@ void NetworkManager::onClientReadyRead() {
     QTcpSocket* clientSocket = qobject_cast<QTcpSocket*>(sender());
     if (!clientSocket) return;
 
-    int playerId = m_clientSockets.indexOf(clientSocket);
+    int playerId = clientSocket->property("clientId").toInt();
+    if (clientSocket->bytesAvailable() > 65536) { clientSocket->abort(); return; }
     while (clientSocket->canReadLine()) {
         QByteArray data = clientSocket->readLine().trimmed();
         QJsonDocument doc = QJsonDocument::fromJson(data);
@@ -155,15 +162,16 @@ void NetworkManager::onClientDisconnected() {
     QTcpSocket* clientSocket = qobject_cast<QTcpSocket*>(sender());
     if (!clientSocket) return;
 
-    int playerId = m_clientSockets.indexOf(clientSocket);
+    int playerId = clientSocket->property("clientId").toInt();
     if (playerId != -1) {
-        m_clientSockets.removeAt(playerId);
+        m_clientSockets.remove(playerId);
         emit playerDisconnected(playerId);
     }
     clientSocket->deleteLater();
 }
 
 void NetworkManager::onSocketReadyRead() {
+    if (m_socket->bytesAvailable() > 65536) { m_socket->abort(); return; }
     while (m_socket->canReadLine()) {
         QByteArray data = m_socket->readLine().trimmed();
         QJsonDocument doc = QJsonDocument::fromJson(data);

@@ -3,6 +3,7 @@
 #include <QtCore/QStandardPaths>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
+#include <QtCore/QSaveFile>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QDateTime>
 
@@ -31,16 +32,18 @@ QJsonObject GameStore::readJson(const QString& filename) const {
 }
 
 void GameStore::writeJson(const QString& filename, const QJsonObject& obj) {
-    QFile file(filePath(filename));
+    QSaveFile file(filePath(filename));
     if (file.open(QIODevice::WriteOnly)) {
-        file.write(QJsonDocument(obj).toJson(QJsonDocument::Indented));
+        const auto bytes = QJsonDocument(obj).toJson(QJsonDocument::Indented);
+        if (file.write(bytes) == bytes.size()) file.commit();
     }
 }
 
 // ==================== 筹码存档 ====================
 
-void GameStore::saveChipState(const QList<Player*>& players) {
+void GameStore::saveChipState(const QList<Player*>& players, int startingChips) {
     QJsonObject root;
+    root["startingChips"] = startingChips;
     QJsonArray arr;
     for (auto p : players) {
         QJsonObject obj;
@@ -53,17 +56,24 @@ void GameStore::saveChipState(const QList<Player*>& players) {
     writeJson("game_save.json", root);
 }
 
+int GameStore::loadStartingChips() const {
+    const int chips = readJson("game_save.json")["startingChips"].toInt(GameConstants::INITIAL_CHIPS);
+    return chips >= GameConstants::MIN_STARTING_CHIPS && chips <= GameConstants::MAX_STARTING_CHIPS
+        ? chips : GameConstants::INITIAL_CHIPS;
+}
+
 bool GameStore::hasChipSave() const {
     QFile file(filePath("game_save.json"));
     return file.exists();
 }
 
 void GameStore::loadChipState(QList<QPair<QString, int>>& outChips) {
+    outChips.clear();
     QJsonObject root = readJson("game_save.json");
     QJsonArray arr = root["players"].toArray();
     for (auto v : arr) {
         QJsonObject obj = v.toObject();
-        outChips.append({obj["name"].toString(), obj["chips"].toInt()});
+        outChips.append({obj["name"].toString(), qMax(0, obj["chips"].toInt())});
     }
 }
 
@@ -137,6 +147,8 @@ QList<MatchRecord> GameStore::getMatchHistory(int limit) const {
 // ==================== 战绩统计 ====================
 
 void GameStore::updateStats(const QString& name, bool won, int chipsDelta, const QString& handType) {
+    // 特殊235只能克制豹子，不能按枚举值当作最强牌型。
+    const QStringList handOrder{"特殊235", "单张", "对子", "顺子", "金花", "顺金", "豹子"};
     QJsonObject root = readJson("player_stats.json");
     QJsonArray stats = root["stats"].toArray();
 
@@ -153,7 +165,7 @@ void GameStore::updateStats(const QString& name, bool won, int chipsDelta, const
             }
             // 记录最佳牌型（按 HandType 数值）
             QString currentBest = s["bestHand"].toString();
-            if (handType != "弃牌" && handType != currentBest) {
+            if (handOrder.indexOf(handType) > handOrder.indexOf(currentBest)) {
                 s["bestHand"] = handType;
             }
             stats[i] = s;
@@ -169,7 +181,7 @@ void GameStore::updateStats(const QString& name, bool won, int chipsDelta, const
         s["losses"] = won ? 0 : 1;
         s["totalChipsWon"] = won ? chipsDelta : 0;
         s["totalChipsLost"] = won ? 0 : qAbs(chipsDelta);
-        s["bestHand"] = handType;
+        s["bestHand"] = handOrder.contains(handType) ? handType : QString();
         stats.append(s);
     }
 

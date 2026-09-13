@@ -3,7 +3,7 @@
 
 Hand::Hand() : m_type(GameConstants::HighCard) {}
 
-Hand::Hand(const QList<Card>& cards) {
+Hand::Hand(const QList<Card>& cards) : m_type(GameConstants::HighCard) {
     setCards(cards);
 }
 
@@ -26,11 +26,13 @@ QString Hand::typeName() const {
 }
 
 void Hand::evaluate() {
+    m_type = GameConstants::HighCard;
     if (m_cards.size() != GameConstants::CARDS_PER_HAND) return;
 
     // 1. 降序排序，方便后续判定
     std::sort(m_cards.begin(), m_cards.end(), [](const Card& a, const Card& b) {
-        return b.getRank() < a.getRank();
+        if (a.getRank() != b.getRank()) return a.getRank() > b.getRank();
+        return a.getSuit() < b.getSuit();
     });
 
     bool isFlush = (m_cards[0].getSuit() == m_cards[1].getSuit() && m_cards[1].getSuit() == m_cards[2].getSuit());
@@ -83,13 +85,16 @@ void Hand::evaluate() {
 }
 
 int Hand::compare(const Hand& h1, const Hand& h2) {
+    const bool valid1 = h1.m_cards.size() == GameConstants::CARDS_PER_HAND;
+    const bool valid2 = h2.m_cards.size() == GameConstants::CARDS_PER_HAND;
+    if (!valid1 || !valid2) return int(valid1) - int(valid2);
     // 1. 特殊235 vs 豹子的互杀规则
     if (h1.m_type == GameConstants::SPECIAL_235 && h2.m_type == GameConstants::Triple) return 1;  // 235反杀豹子
     if (h2.m_type == GameConstants::SPECIAL_235 && h1.m_type == GameConstants::Triple) return -1; // 豹子被235反杀
 
     // 特殊235 输给除豹子外的所有牌型
-    if (h1.m_type == GameConstants::SPECIAL_235 && h2.m_type != GameConstants::Triple) return -1;
-    if (h2.m_type == GameConstants::SPECIAL_235 && h1.m_type != GameConstants::Triple) return 1;
+    if (h1.m_type == GameConstants::SPECIAL_235 && h2.m_type != GameConstants::SPECIAL_235) return -1;
+    if (h2.m_type == GameConstants::SPECIAL_235 && h1.m_type != GameConstants::SPECIAL_235) return 1;
 
     // 2. 比较牌型（此时双方都不是 SPECIAL_235 vs Triple 的组合）
     if (h1.m_type > h2.m_type) return 1;

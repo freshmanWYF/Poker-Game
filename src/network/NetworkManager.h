@@ -8,6 +8,7 @@
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonArray>
 #include <QtCore/QList>
+#include <QtCore/QMap>
 
 class NetworkManager : public QObject {
     Q_OBJECT
@@ -30,7 +31,7 @@ public:
 
     bool isHost() const { return m_isHost; }
     bool isConnected() const { return m_socket->state() == QAbstractSocket::ConnectedState; }
-    QList<QTcpSocket*> getClientSockets() const { return m_clientSockets; }
+    QList<QTcpSocket*> getClientSockets() const { return m_clientSockets.values(); }
 
 signals:
     // 房主端信号
@@ -54,8 +55,9 @@ private:
     bool m_isHost;
     QTcpServer* m_server;
     QTcpSocket* m_socket; // 客户端模式下的套接字
-    QList<QTcpSocket*> m_clientSockets; // 房主模式下的所有客户端套接字
+    QMap<int, QTcpSocket*> m_clientSockets; // 房主模式下的所有客户端套接字
     int m_listenPort = 0;
+    int m_nextClientId = 0;
 };
 
 #endif // NETWORKMANAGER_H
